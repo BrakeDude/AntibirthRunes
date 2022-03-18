@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<metadata>
+    <name>Antibirth Runes</name>
+    <directory>antibirth runes</directory>
+    <id>2609612697</id>
+    <description>In the Antibirth mod, there were 4 runes that were cut from Repentance along with 2 more runes that were unused. This mod brings them back!
+
+[img]https://i.imgur.com/tp9LIOS.png[/img]
+
+[h1]𝐀𝐧𝐭𝐢𝐛𝐢𝐫𝐭𝐡 𝐑𝐮𝐧𝐞𝐬[/h1]
+[list]
+[*]Features EID &amp; Encyclopedia support
+[*]Features Magic Chalk Support
+[/list]
+[u]___________________________________[/u]
+
+[img]https://i.imgur.com/X4nGns7.png[/img] All runes are unlockable by completing the stated challenge [img]https://i.imgur.com/X4nGns7.png[/img]
+
+[img]https://i.imgur.com/e1tGcWD.png[/img] [u]Gebo[/u] = Spawns a donation machine (Bloody Mary)
+[img]https://i.imgur.com/j1uZxxz.png[/img] [u]Kenaz[/u] = Poisons all enemies in a room (Scat Man)
+[img]https://i.imgur.com/D1oVdwF.png[/img] [u]Fehu[/u] = Turns all pickup in a room into coins (Cantripped) 
+[img]https://i.imgur.com/xaxZPnB.png[/img] [u]Othala[/u] = Gives Isaac a random item that he already holds (Seeing Double)
+[img]https://i.imgur.com/qmJ8aLd.png[/img] [u]Ingwaz[/u] = Opens all chests in a room (Baptism by Fire)
+[img]https://i.imgur.com/J43GFfs.png[/img] [u]Sowilo[/u] = Revives all enemies killed in a room (Red Redemption)
+
+[u]___________________________________[/u]
+
+ (Note: Gebo is currently a placeholder effect because the true effect it does in Antibirth is impossible with the current modding api. Pls fix kil :( )
+
+[img]https://i.imgur.com/0YXOqPH.png[/img]
+[list]
+[*][u]𝐃𝐢𝐫𝐞𝐜𝐭𝐨𝐫 𝐚𝐧𝐝 𝐆𝐫𝐚𝐩𝐡𝐢𝐜 𝐃𝐞𝐬𝐢𝐠𝐧𝐞𝐫[/u] = Sillst
+[*][u]𝐏𝐫𝐨𝐠𝐫𝐚𝐦𝐦𝐞𝐫𝐬[/u] = kittenchilly, BrakeDude
+[*][u]𝐒𝐩𝐫𝐢𝐭𝐞𝐫𝐬[/u] = Sillst, Michael¿?
+[*][u]𝐓𝐫𝐚𝐧𝐬𝐥𝐚𝐭𝐨𝐫𝐬[/u] = Kotry, BrakeDude
+[*][u]𝐏𝐥𝐚𝐲𝐭𝐞𝐬𝐭𝐞𝐫𝐬[/u] = kittenchilly, Sillst
+[/list]
+
+[img]https://i.imgur.com/3en8OyU.png[/img]
+[code]Aether, Akad, anchikai., Blind the Bound Demon, Blixy, BrakeDude, cat,,, Firework, fly_6, Goncholito, jubbalub, kittenchilly, Luigi124, Merlin, Michael¿?, Royal, Sillst, skippy[/code]
+
+[img]https://i.imgur.com/SlXbHql.png[/img] [img]https://i.imgur.com/xd2eafr.png[/img]
+[code][u]_Kilburn[/u] - For the original rune ideas
+[u]All of you[/u] - For checking us out and supporting us :)[/code]
+
+[img]https://i.imgur.com/GKVOZZ8.png[/img]
+
+[img]https://i.imgur.com/xK4Mor0.png[/img] [url=https://discord.gg/GdVnkV4Gwj]TBOI: Compliance Discord Server[/url] [img]https://i.imgur.com/xK4Mor0.png[/img]
+[img]https://i.imgur.com/69jZFo8.png[/img] [url=https://www.reddit.com/r/TBOICompliance/]TBOI: Compliance Subreddit[/url] [img]https://i.imgur.com/69jZFo8.png[/img]
+[img]https://i.imgur.com/GmVPmG0.png[/img] [url=https://www.youtube.com/channel/UCEdAioGltx_hOsyDW57nvSw/featured]TBOI: Compliance YouTube[/url] [img]https://i.imgur.com/GmVPmG0.png[/img]
+[img]https://i.imgur.com/jBFg02x.png[/img] [url=https://twitter.com/ComplianceMods]Compliance Twitter Account[/url] [img]https://i.imgur.com/jBFg02x.png[/img]
+
+[img]https://i.imgur.com/DVq7svp.png[/img]</description>
+    <version>1.4</version>
+    <visibility>Public</visibility>
+    <tag id="Lua"/>
+    <tag id="Pickups"/>
+    <tag id="Sound Effects"/>
+</metadata>

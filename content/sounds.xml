@@ -1,0 +1,26 @@
+<sounds root="sfx/">
+	<sound name="Gebo">
+		<sample weight="1" path="Gebo_1_Louder.wav" />
+		<sample weight="1" path="Gebo_2_Louder.wav" />
+	</sound>
+	<sound name="Kenaz">
+		<sample weight="1" path="Kenaz_1_Louder.wav" />
+		<sample weight="1" path="Kenaz_2_Louder.wav" />
+	</sound>
+	<sound name="Fehu">
+		<sample weight="1" path="Fehu_1_Louder.wav" />
+		<sample weight="1" path="Fehu_2_Louder.wav" />
+	</sound>
+	<sound name="Othala">
+		<sample weight="1" path="Othala_1_Louder.wav" />
+		<sample weight="1" path="Othala_2_Louder.wav" />
+	</sound>
+	<sound name="Ingwaz">
+		<sample weight="1" path="Ingwaz_1_Louder.wav" />
+		<sample weight="1" path="Ingwaz_2_Louder.wav" />
+	</sound>
+	<sound name="Sowilo">
+		<sample weight="1" path="Sowilo_1_Louder.wav" />
+		<sample weight="1" path="Sowilo_2_Louder.wav" />
+	</sound>
+</sounds>
