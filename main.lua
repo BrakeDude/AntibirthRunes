@@ -108,7 +108,7 @@ function mod:UseFehu(fehu, player, useflags)
 	for i = 1,math.ceil(#entities/2) do
 		entities[i]:AddMidasFreeze(EntityRef(player), 90)
 	end
-	Game():ShowHallucination(0, BackdropType.CAVES)
+	Game():GetRoom():TurnGold()
 	if magicchalk_3f(player) then
 		Isaac.Spawn(EntityType.ENTITY_PICKUP, PickupVariant.PICKUP_COIN, CoinSubType.COIN_PENNY, Game():GetRoom():FindFreePickupSpawnPosition(player.Position, 0, true), Vector.Zero, player)
 	end
