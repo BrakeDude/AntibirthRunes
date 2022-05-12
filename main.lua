@@ -52,7 +52,7 @@ end
 
 function mod:UseGebo(gebo, player, useflags)
 	if GiantBookAPI then
-		GiantBookAPI.playGiantBook("Appear", "gfx/ui/giantbook/Gebo.png", Color(0.2, 0.1, 0.3, 1, 0, 0, 0), Color(0.117, 0.0117, 0.2, 1, 0, 0, 0), Color(0, 0, 0, 0.8, 0, 0, 0),GeboSFX)
+		GiantBookAPI.playGiantBook("Appear", "Gebo.png", Color(0.2, 0.1, 0.3, 1, 0, 0, 0), Color(0.117, 0.0117, 0.2, 1, 0, 0, 0), Color(0, 0, 0, 0.8, 0, 0, 0),GeboSFX)
 	end
 	local donoState = Game():GetStateFlag(GameStateFlag.STATE_DONATION_SLOT_BROKEN)
 	Game():SetStateFlag(GameStateFlag.STATE_DONATION_SLOT_BROKEN, false)
@@ -68,7 +68,7 @@ mod:AddCallback(ModCallbacks.MC_USE_CARD, mod.UseGebo, GeboID)
 
 function mod:UseKenaz(kenaz, player, useflags)
 	if GiantBookAPI then
-		GiantBookAPI.playGiantBook("Appear", "gfx/ui/giantbook/Kenaz.png", Color(0.2, 0.1, 0.3, 1, 0, 0, 0), Color(0.117, 0.0117, 0.2, 1, 0, 0, 0), Color(0, 0, 0, 0.8, 0, 0, 0), KenazSFX)
+		GiantBookAPI.playGiantBook("Appear", "Kenaz.png", Color(0.2, 0.1, 0.3, 1, 0, 0, 0), Color(0.117, 0.0117, 0.2, 1, 0, 0, 0), Color(0, 0, 0, 0.8, 0, 0, 0), KenazSFX)
 	end
 	player:AddCollectible(CollectibleType.COLLECTIBLE_TOXIC_SHOCK)
 	player:RemoveCollectible(CollectibleType.COLLECTIBLE_TOXIC_SHOCK) --this method actually works lol
@@ -95,7 +95,7 @@ end
 
 function mod:UseFehu(fehu, player, useflags)
 	if GiantBookAPI then
-		GiantBookAPI.playGiantBook("Appear", "gfx/ui/giantbook/Fehu.png", Color(0.2, 0.1, 0.3, 1, 0, 0, 0), Color(0.117, 0.0117, 0.2, 1, 0, 0, 0), Color(0, 0, 0, 0.8, 0, 0, 0),FehuSFX)
+		GiantBookAPI.playGiantBook("Appear", "Fehu.png", Color(0.2, 0.1, 0.3, 1, 0, 0, 0), Color(0.117, 0.0117, 0.2, 1, 0, 0, 0), Color(0, 0, 0, 0.8, 0, 0, 0),FehuSFX)
 	end
 	--player:UseCard(Card.CARD_REVERSE_HERMIT, UseFlag.USE_NOANIM | UseFlag.USE_NOANNOUNCER)
 	local entities = {}
@@ -108,6 +108,7 @@ function mod:UseFehu(fehu, player, useflags)
 	for i = 1,math.ceil(#entities/2) do
 		entities[i]:AddMidasFreeze(EntityRef(player), 90)
 	end
+	Game():ShowHallucination(0, BackdropType.CAVES)
 	if magicchalk_3f(player) then
 		Isaac.Spawn(EntityType.ENTITY_PICKUP, PickupVariant.PICKUP_COIN, CoinSubType.COIN_PENNY, Game():GetRoom():FindFreePickupSpawnPosition(player.Position, 0, true), Vector.Zero, player)
 	end
@@ -116,7 +117,7 @@ mod:AddCallback(ModCallbacks.MC_USE_CARD, mod.UseFehu, FehuID)
 
 function mod:UseOthala(othala, player, useflags)
 	if GiantBookAPI then
-		GiantBookAPI.playGiantBook("Appear", "gfx/ui/giantbook/Othala.png", Color(0.2, 0.1, 0.3, 1, 0, 0, 0), Color(0.117, 0.0117, 0.2, 1, 0, 0, 0), Color(0, 0, 0, 0.8, 0, 0, 0),OthalaSFX)
+		GiantBookAPI.playGiantBook("Appear", "Othala.png", Color(0.2, 0.1, 0.3, 1, 0, 0, 0), Color(0.117, 0.0117, 0.2, 1, 0, 0, 0), Color(0, 0, 0, 0.8, 0, 0, 0),OthalaSFX)
 	end
 	if player:GetCollectibleCount() > 0 then
 		local playersItems = {}
@@ -148,7 +149,7 @@ mod:AddCallback(ModCallbacks.MC_USE_CARD, mod.UseOthala, OthalaID)
 
 function mod:UseSowilo(sowilo, player, useflags)
 	if GiantBookAPI then
-		GiantBookAPI.playGiantBook("Appear", "gfx/ui/giantbook/Sowilo.png", Color(0.2, 0.1, 0.3, 1, 0, 0, 0), Color(0.117, 0.0117, 0.2, 1, 0, 0, 0), Color(0, 0, 0, 0.8, 0, 0, 0),SowiloSFX)
+		GiantBookAPI.playGiantBook("Appear", "Sowilo.png", Color(0.2, 0.1, 0.3, 1, 0, 0, 0), Color(0.117, 0.0117, 0.2, 1, 0, 0, 0), Color(0, 0, 0, 0.8, 0, 0, 0),SowiloSFX)
 	end
 	
 	if magicchalk_3f(player) then
@@ -162,7 +163,7 @@ mod:AddCallback(ModCallbacks.MC_USE_CARD, mod.UseSowilo, SowiloID)
 function mod:UseIngwaz(ingwaz, player, useflags)
 	local entities = Isaac:GetRoomEntities()
 	if GiantBookAPI then
-		GiantBookAPI.playGiantBook("Appear", "gfx/ui/giantbook/Ingwaz.png", Color(0.2, 0.1, 0.3, 1, 0, 0, 0), Color(0.117, 0.0117, 0.2, 1, 0, 0, 0), Color(0, 0, 0, 0.8, 0, 0, 0),IngwazSFX)
+		GiantBookAPI.playGiantBook("Appear", "Ingwaz.png", Color(0.2, 0.1, 0.3, 1, 0, 0, 0), Color(0.117, 0.0117, 0.2, 1, 0, 0, 0), Color(0, 0, 0, 0.8, 0, 0, 0),IngwazSFX)
 	end
 	for i=1, #entities do
 		if entities[i]:ToPickup() then
