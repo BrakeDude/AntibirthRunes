@@ -26,7 +26,7 @@ local EIDIngwazRu = "Открывает все сундуки в комнате"
 if EID then
 	EID:addCard(GeboID, "Spawns a donation machine", "Gebo", "en_us")
 	EID:addCard(KenazID, "Poisons all enemies in the room", "Kenaz", "en_us")
-	EID:addCard(FehuID, "Turns pickups and items in the room into coins#Coin values are equal to their shop value", "Fehu", "en_us")
+	EID:addCard(FehuID, "Applies the Midas Touch effect to half the monsters in a room for 5 seconds.", "Fehu", "en_us")
 	EID:addCard(OthalaID, "Gives another copy of a random item that you already have", "Othala", "en_us")
 	EID:addCard(SowiloID, "Respawn all enemies of the room#Allows you to farm room clear rewards#!!! If used in a greed fight, it can reroll the room into a Shop", "Sowilo", "en_us")
 	EID:addCard(IngwazID, "Unlocks every chest in the room", "Ingwaz", "en_us")
