@@ -32,7 +32,7 @@ if EID then
 	EID:addCard(IngwazID, "Unlocks every chest in the room", "Ingwaz", "en_us")
 	EID:addCard(GeboID, "Aparece una máquina de donación", "Gebo", "spa")
 	EID:addCard(KenazID, "Envenena a todos los enemigos en la sala", "Kenaz", "spa")
-	EID:addCard(FehuID, "Aplica el efecto Toque de Midas a la mitad de los monstruos de una habitación durante 5 segundos", "Fehu", "spa")
+	EID:addCard(FehuID, "Aplica el efecto de Toque de Midas a la mitad de los monstruos en una habitación por 5 segundos", "Fehu", "spa")
 	EID:addCard(OthalaID, "Te da una copia de un objeto ya existente en tu inventario", "Othala", "spa")
 	EID:addCard(SowiloID, "Revive a los enemigos de una sala limpia#Permite conseguir más recompensas#!!! Si se usa en una pelea contra Greed, puede cambiar la sala a una tienda", "Sowilo", "spa")
 	EID:addCard(IngwazID, "Abre todos los cofres de una sala", "Ingwaz", "spa")
