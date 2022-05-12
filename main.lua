@@ -51,9 +51,14 @@ local function magicchalk_3f(player)
 end
 
 function mod:UseGebo(gebo, player, useflags)
-	DoBigbook("gfx/ui/giantbook/Gebo.png", GeboSFX, nil, nil, true)
+	if GiantBookAPI then
+		GiantBookAPI.playGiantBook("Appear", "gfx/ui/giantbook/Gebo.png", Color(0.2, 0.1, 0.3, 1, 0, 0, 0), Color(0.117, 0.0117, 0.2, 1, 0, 0, 0), Color(0, 0, 0, 0.8, 0, 0, 0),GeboSFX)
+	end
+	local donoState = Game():GetStateFlag(GameStateFlag.STATE_DONATION_SLOT_BROKEN)
+	Game():SetStateFlag(GameStateFlag.STATE_DONATION_SLOT_BROKEN, false)
 	local slot = Isaac.Spawn(EntityType.ENTITY_SLOT, 8, -1, Game():GetRoom():FindFreePickupSpawnPosition(player.Position, 0, true), Vector.Zero, player)
 	Isaac.Spawn(EntityType.ENTITY_EFFECT, EffectVariant.POOF01, -1, slot.Position, slot.Velocity, slot)
+	Game():SetStateFlag(GameStateFlag.STATE_DONATION_SLOT_BROKEN, donoState)
 	if magicchalk_3f(player) then
 		local restock = Isaac.Spawn(EntityType.ENTITY_SLOT, 10, -1, Game():GetRoom():FindFreePickupSpawnPosition(player.Position, 0, true), Vector.Zero, player)
 		Isaac.Spawn(EntityType.ENTITY_EFFECT, EffectVariant.POOF01, -1, restock.Position, restock.Velocity, restock)
@@ -62,7 +67,9 @@ end
 mod:AddCallback(ModCallbacks.MC_USE_CARD, mod.UseGebo, GeboID)
 
 function mod:UseKenaz(kenaz, player, useflags)
-	DoBigbook("gfx/ui/giantbook/Kenaz.png", KenazSFX, nil, nil, true)
+	if GiantBookAPI then
+		GiantBookAPI.playGiantBook("Appear", "gfx/ui/giantbook/Kenaz.png", Color(0.2, 0.1, 0.3, 1, 0, 0, 0), Color(0.117, 0.0117, 0.2, 1, 0, 0, 0), Color(0, 0, 0, 0.8, 0, 0, 0), KenazSFX)
+	end
 	player:AddCollectible(CollectibleType.COLLECTIBLE_TOXIC_SHOCK)
 	player:RemoveCollectible(CollectibleType.COLLECTIBLE_TOXIC_SHOCK) --this method actually works lol
 	if magicchalk_3f(player) then
@@ -87,8 +94,20 @@ end
 --mod:AddCallback(ModCallbacks.MC_PRE_NPC_UPDATE, mod.KenazPoison)
 
 function mod:UseFehu(fehu, player, useflags)
-	DoBigbook("gfx/ui/giantbook/Fehu.png", FehuSFX, nil, nil, true)
-	player:UseCard(Card.CARD_REVERSE_HERMIT, UseFlag.USE_NOANIM | UseFlag.USE_NOANNOUNCER)
+	if GiantBookAPI then
+		GiantBookAPI.playGiantBook("Appear", "gfx/ui/giantbook/Fehu.png", Color(0.2, 0.1, 0.3, 1, 0, 0, 0), Color(0.117, 0.0117, 0.2, 1, 0, 0, 0), Color(0, 0, 0, 0.8, 0, 0, 0),FehuSFX)
+	end
+	--player:UseCard(Card.CARD_REVERSE_HERMIT, UseFlag.USE_NOANIM | UseFlag.USE_NOANNOUNCER)
+	local entities = {}
+	for _,e in pairs(Isaac.GetRoomEntities()) do
+		if e:IsActiveEnemy(false) and e:IsEnemy() and e:IsVulnerableEnemy() and not EntityRef(e).IsCharmed and not EntityRef(e).IsFriendly then
+			table.insert(entities,e)
+		end
+	end
+	entities = Shuffle(entities)
+	for i = 1,math.ceil(#entities/2) do
+		entities[i]:AddMidasFreeze(EntityRef(player), 90)
+	end
 	if magicchalk_3f(player) then
 		Isaac.Spawn(EntityType.ENTITY_PICKUP, PickupVariant.PICKUP_COIN, CoinSubType.COIN_PENNY, Game():GetRoom():FindFreePickupSpawnPosition(player.Position, 0, true), Vector.Zero, player)
 	end
@@ -96,7 +115,9 @@ end
 mod:AddCallback(ModCallbacks.MC_USE_CARD, mod.UseFehu, FehuID)
 
 function mod:UseOthala(othala, player, useflags)
-	DoBigbook("gfx/ui/giantbook/Othala.png", OthalaSFX, nil, nil, true)
+	if GiantBookAPI then
+		GiantBookAPI.playGiantBook("Appear", "gfx/ui/giantbook/Othala.png", Color(0.2, 0.1, 0.3, 1, 0, 0, 0), Color(0.117, 0.0117, 0.2, 1, 0, 0, 0), Color(0, 0, 0, 0.8, 0, 0, 0),OthalaSFX)
+	end
 	if player:GetCollectibleCount() > 0 then
 		local playersItems = {}
 		for item = 1,GetMaxCollectibleID() do
@@ -126,7 +147,9 @@ end
 mod:AddCallback(ModCallbacks.MC_USE_CARD, mod.UseOthala, OthalaID)
 
 function mod:UseSowilo(sowilo, player, useflags)
-	DoBigbook("gfx/ui/giantbook/Sowilo.png", SowiloSFX, nil, nil, true)
+	if GiantBookAPI then
+		GiantBookAPI.playGiantBook("Appear", "gfx/ui/giantbook/Sowilo.png", Color(0.2, 0.1, 0.3, 1, 0, 0, 0), Color(0.117, 0.0117, 0.2, 1, 0, 0, 0), Color(0, 0, 0, 0.8, 0, 0, 0),SowiloSFX)
+	end
 	
 	if magicchalk_3f(player) then
 		player:UseActiveItem(CollectibleType.COLLECTIBLE_FORGET_ME_NOW, UseFlag.USE_NOANIM | UseFlag.USE_NOANNOUNCER)
@@ -138,7 +161,9 @@ mod:AddCallback(ModCallbacks.MC_USE_CARD, mod.UseSowilo, SowiloID)
 
 function mod:UseIngwaz(ingwaz, player, useflags)
 	local entities = Isaac:GetRoomEntities()
-	DoBigbook("gfx/ui/giantbook/Ingwaz.png", IngwazSFX, nil, nil, true)
+	if GiantBookAPI then
+		GiantBookAPI.playGiantBook("Appear", "gfx/ui/giantbook/Ingwaz.png", Color(0.2, 0.1, 0.3, 1, 0, 0, 0), Color(0.117, 0.0117, 0.2, 1, 0, 0, 0), Color(0, 0, 0, 0.8, 0, 0, 0),IngwazSFX)
+	end
 	for i=1, #entities do
 		if entities[i]:ToPickup() then
 			if (entities[i].Variant >= 50 and 60 >= entities[i].Variant) or entities[i].Variant == PickupVariant.PICKUP_REDCHEST or entities[i].Variant == PickupVariant.PICKUP_MOMSCHEST then
@@ -193,272 +218,4 @@ function Shuffle(list)
 		shuffled[i], shuffled[j] = shuffled[j], shuffled[i]
 	end
     return shuffled
-end
---------------------------
---start of bigbook stuff--
---------------------------
-OnRenderCounter = 0
-IsEvenRender = true
-mod:AddCallback(ModCallbacks.MC_POST_RENDER, function()
-	OnRenderCounter = OnRenderCounter + 1
-	
-	IsEvenRender = false
-	if Isaac.GetFrameCount()%2 == 0 then
-		IsEvenRender = true
-	end
-end)
-
---ripairs stuff from revel
-function ripairs_it(t,i)
-	i=i-1
-	local v=t[i]
-	if v==nil then return v end
-	return i,v
-end
-function ripairs(t)
-	return ripairs_it, t, #t+1
-end
-
---delayed functions
-DelayedFunctions = {}
-
-function DelayFunction(func, delay, args, removeOnNewRoom, useRender)
-	local delayFunctionData = {
-		Function = func,
-		Delay = delay,
-		Args = args,
-		RemoveOnNewRoom = removeOnNewRoom,
-		OnRender = useRender
-	}
-	table.insert(DelayedFunctions, delayFunctionData)
-end
-
-mod:AddCallback(ModCallbacks.MC_POST_NEW_ROOM, function()
-	for i, delayFunctionData in ripairs(DelayedFunctions) do
-		if delayFunctionData.RemoveOnNewRoom then
-			table.remove(DelayedFunctions, i)
-		end
-	end
-end)
-
-local function delayFunctionHandling(onRender)
-	if #DelayedFunctions ~= 0 then
-		for i, delayFunctionData in ripairs(DelayedFunctions) do
-			if (delayFunctionData.OnRender and onRender) or (not delayFunctionData.OnRender and not onRender) then
-				if delayFunctionData.Delay <= 0 then
-					if delayFunctionData.Function then
-						if delayFunctionData.Args then
-							delayFunctionData.Function(table.unpack(delayFunctionData.Args))
-						else
-							delayFunctionData.Function()
-						end
-					end
-					table.remove(DelayedFunctions, i)
-				else
-					delayFunctionData.Delay = delayFunctionData.Delay - 1
-				end
-			end
-		end
-	end
-end
-
-mod:AddCallback(ModCallbacks.MC_POST_UPDATE, function()
-	delayFunctionHandling(false)
-end)
-
-mod:AddCallback(ModCallbacks.MC_POST_RENDER, function()
-	delayFunctionHandling(true)
-end)
-
-mod:AddCallback(ModCallbacks.MC_POST_GAME_STARTED, function()
-	DelayedFunctions = {}
-end)
-
---bigbook pausing
-local hideBerkano = false
-function DoBigbookPause()
-	local player = Isaac.GetPlayer(0)
-	
-	local sfx = SFXManager()
-	
-	hideBerkano = true
-	player:UseCard(Card.RUNE_BERKANO, UseFlag.USE_NOANIM | UseFlag.USE_NOANNOUNCER) --we undo berkano's effects later, this is done purely for the bigbook which our housing mod should have made blank if we got here
-	
-	--remove the blue flies and spiders that just spawned
-	for _, bluefly in pairs(Isaac.FindByType(EntityType.ENTITY_FAMILIAR, FamiliarVariant.BLUE_FLY, -1, false, false)) do
-		if bluefly:Exists() and bluefly.FrameCount <= 0 then
-			bluefly:Remove()
-		end
-	end
-	for _, bluespider in pairs(Isaac.FindByType(EntityType.ENTITY_FAMILIAR, FamiliarVariant.BLUE_SPIDER, -1, false, false)) do
-		if bluespider:Exists() and bluespider.FrameCount <= 0 then
-			bluespider:Remove()
-		end
-	end
-end
-
-local isPausingGame = false
-local isPausingGameTimer = 0
-function KeepPaused()
-	isPausingGame = true
-	isPausingGameTimer = 0
-end
-
-function StopPausing()
-	isPausingGame = false
-	isPausingGameTimer = 0
-end
-
-mod:AddCallback(ModCallbacks.MC_POST_RENDER, function()
-	if isPausingGame then
-		isPausingGameTimer = isPausingGameTimer - 1
-		if isPausingGameTimer <= 0 then
-			isPausingGameTimer = 30
-			DoBigbookPause()
-		end
-	end
-end)
-
-mod:AddCallback(ModCallbacks.MC_USE_CARD, function()
-	if not hideBerkano then
-		DelayFunction(function()
-			local stuffWasSpawned = false
-			
-			for _, bluefly in pairs(Isaac.FindByType(EntityType.ENTITY_FAMILIAR, FamiliarVariant.BLUE_FLY, -1, false, false)) do
-				if bluefly:Exists() and bluefly.FrameCount <= 1 then
-					stuffWasSpawned = true
-					break
-				end
-			end
-			
-			for _, bluespider in pairs(Isaac.FindByType(EntityType.ENTITY_FAMILIAR, FamiliarVariant.BLUE_SPIDER, -1, false, false)) do
-				if bluespider:Exists() and bluespider.FrameCount <= 1 then
-					stuffWasSpawned = true
-					break
-				end
-			end
-			
-			if stuffWasSpawned then
-				DoBigbook("gfx/ui/giantbook/rune_07_berkano.png", nil, nil, nil, false)
-			end
-		end, 1, nil, false, true)
-	end
-	hideBerkano = false
-end, Card.RUNE_BERKANO)
-
---giantbook overlays
-local shouldRenderGiantbook = false
-local giantbookUI = Sprite()
-giantbookUI:Load("gfx/ui/giantbook/giantbook.anm2", true)
-local giantbookAnimation = "Appear"
-function DoBigbook(spritesheet, sound, animationToPlay, animationFile, doPause)
-
-	if doPause == nil then
-		doPause = true
-	end
-	if doPause then
-		DoBigbookPause()
-	end
-	
-	if not animationToPlay then
-		animationToPlay = "Appear"
-	end
-	
-	if not animationFile then
-		animationFile = "gfx/ui/giantbook/giantbook.anm2"
-		if animationToPlay == "Appear" or animationToPlay == "Shake" then
-			animationFile = "gfx/ui/giantbook/giantbook.anm2"
-		elseif animationToPlay == "Static" then
-			animationToPlay = "Effect"
-			animationFile = "gfx/ui/giantbook/giantbook_clicker.anm2"
-		elseif animationToPlay == "Flash" then
-			animationToPlay = "Idle"
-			animationFile = "gfx/ui/giantbook/giantbook_mama_mega.anm2"
-		elseif animationToPlay == "Sleep" then
-			animationToPlay = "Idle"
-			animationFile = "gfx/ui/giantbook/giantbook_sleep.anm2"
-		elseif animationToPlay == "AppearBig" or animationToPlay == "ShakeBig" then
-			if animationToPlay == "AppearBig" then
-				animationToPlay = "Appear"
-			elseif animationToPlay == "ShakeBig" then
-				animationToPlay = "Shake"
-			end
-			animationFile = "gfx/ui/giantbook/giantbookbig.anm2"
-		end
-	end
-	
-	giantbookAnimation = animationToPlay
-	giantbookUI:Load(animationFile, true)
-	if spritesheet then
-		giantbookUI:ReplaceSpritesheet(0, spritesheet)
-		giantbookUI:LoadGraphics()
-	end
-	giantbookUI:Play(animationToPlay, true)
-	shouldRenderGiantbook = true
-	
-	if sound then
-		local sfx = SFXManager()
-		sfx:Play(sound, 1, 0, false, 1)
-	end
-	
-end
-mod:AddCallback(ModCallbacks.MC_POST_RENDER, function()
-	if ShouldRender() then
-		local centerPos = GetScreenCenterPosition()
-		
-		if IsEvenRender then
-			giantbookUI:Update()
-			if giantbookUI:IsFinished(giantbookAnimation) then
-				shouldRenderGiantbook = false
-			end
-		end
-		
-		if shouldRenderGiantbook then
-			giantbookUI:Render(centerPos, Vector.Zero, Vector.Zero)
-		end
-	end
-end)
-mod:AddCallback(ModCallbacks.MC_POST_GAME_STARTED, function()
-	shouldRenderGiantbook = false
-end)
-
-function ShouldRender(ignoreMusic, ignoreNoHud)
-
-	local music = MusicManager()
-	local currentMusic = music:GetCurrentMusicID()
-	
-	local game = Game()
-	local seeds = game:GetSeeds()
-
-	if (ignoreMusic or (currentMusic ~= Music.MUSIC_JINGLE_BOSS and currentMusic ~= Music.MUSIC_JINGLE_NIGHTMARE)) and (ignoreNoHud or not seeds:HasSeedEffect(SeedEffect.SEED_NO_HUD)) then
-		return true
-	end
-	
-	return false
-end
-
-function GetScreenCenterPosition()
-
-	local game = Game()
-	local room = game:GetRoom()
-
-	local shape = room:GetRoomShape()
-	local centerOffset = (room:GetCenterPos()) - room:GetTopLeftPos()
-	local pos = room:GetCenterPos()
-	
-	if centerOffset.X > 260 then
-		pos.X = pos.X - 260
-	end
-	if shape == RoomShape.ROOMSHAPE_LBL or shape == RoomShape.ROOMSHAPE_LTL then
-		pos.X = pos.X - 260
-	end
-	if centerOffset.Y > 140 then
-		pos.Y = pos.Y - 140
-	end
-	if shape == RoomShape.ROOMSHAPE_LTR or shape == RoomShape.ROOMSHAPE_LTL then
-		pos.Y = pos.Y - 140
-	end
-	
-	return Isaac.WorldToRenderPosition(pos, false)
-	
 end
