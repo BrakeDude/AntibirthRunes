@@ -104,14 +104,12 @@ function mod:UseFehu(fehu, player, useflags)
 			table.insert(entities,e)
 		end
 	end
+	local div = magicchalk_3f(player) and 1 or 2
 	entities = Shuffle(entities)
-	for i = 1,math.ceil(#entities/2) do
-		entities[i]:AddMidasFreeze(EntityRef(player), 90)
+	for i = 1,math.ceil(#entities/div) do
+		entities[i]:AddMidasFreeze(EntityRef(player), 300 / div)
 	end
 	Game():GetRoom():TurnGold()
-	if magicchalk_3f(player) then
-		Isaac.Spawn(EntityType.ENTITY_PICKUP, PickupVariant.PICKUP_COIN, CoinSubType.COIN_PENNY, Game():GetRoom():FindFreePickupSpawnPosition(player.Position, 0, true), Vector.Zero, player)
-	end
 end
 mod:AddCallback(ModCallbacks.MC_USE_CARD, mod.UseFehu, FehuID)
 
