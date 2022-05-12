@@ -17,7 +17,7 @@ local IngwazSFX = Isaac.GetSoundIdByName("Ingwaz")
 
 local EIDGeboRu = "Создает машину для пожертвований"
 local EIDKenazRu = "Отравляет всех врагов в комнате"
-local EIDFehuRu = "Превращает артефакты и предметы в монеты по их обычной цене в магазине"
+local EIDFehuRu = "Применяет эффект Прикосновения Мидаса к половине монстров в комнате на 5 секунд"
 local EIDOthalaRu = "Дает ещё одну копию случайного имеющегося артефакта"
 local EIDSowiloRu = "Восстанавливает ранее убитых врагов в комнате#Позволяет повторно получить награду за зачистку комнаты#!!! Если использовать в борьбе с жадностью, можно превратить комнату в магазин"
 local EIDIngwazRu = "Открывает все сундуки в комнате"
@@ -26,7 +26,7 @@ local EIDIngwazRu = "Открывает все сундуки в комнате"
 if EID then
 	EID:addCard(GeboID, "Spawns a donation machine", "Gebo", "en_us")
 	EID:addCard(KenazID, "Poisons all enemies in the room", "Kenaz", "en_us")
-	EID:addCard(FehuID, "Applies the Midas Touch effect to half the monsters in a room for 5 seconds.", "Fehu", "en_us")
+	EID:addCard(FehuID, "Applies the Midas Touch effect to half the monsters in a room for 5 seconds", "Fehu", "en_us")
 	EID:addCard(OthalaID, "Gives another copy of a random item that you already have", "Othala", "en_us")
 	EID:addCard(SowiloID, "Respawn all enemies of the room#Allows you to farm room clear rewards#!!! If used in a greed fight, it can reroll the room into a Shop", "Sowilo", "en_us")
 	EID:addCard(IngwazID, "Unlocks every chest in the room", "Ingwaz", "en_us")
