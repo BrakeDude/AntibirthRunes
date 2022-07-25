@@ -130,20 +130,48 @@ function mod:UseOthala(othala, player, useflags)
 			end
 		end
 		playersItems = Shuffle(playersItems)
+		local data = mod:GetData(player)
 		if #playersItems > 0 then
 			local randomItem = player:GetCardRNG(OthalaID):RandomInt(#playersItems)+1
-			player:AddCollectible(playersItems[randomItem])
-			
+			--player:AddCollectible(playersItems[randomItem])
+			data.OthalaClone = {}
+			table.insert(data.OthalaClone,playersItems[randomItem])
 		end
 		if magicchalk_3f(player) then
 			if #playersItems > 0 then
 				local randomItem = player:GetCardRNG(OthalaID):RandomInt(#playersItems)+1
-				player:AddCollectible(playersItems[randomItem])
+				--player:AddCollectible(playersItems[randomItem])
+				table.insert(data.OthalaClone,playersItems[randomItem])
 			end
 		end
 	end
 end
 mod:AddCallback(ModCallbacks.MC_USE_CARD, mod.UseOthala, OthalaID)
+
+local function PickingUp(player)
+	local s = player:GetSprite()
+	for _,im in ipairs({Up,Down,Left,Right}) do
+		if s:GetAnimation() == "PickWalk"..im then
+			return true
+		end
+	end
+	return false
+end
+
+function mod:OthalaDuplicatePickup(player)
+	local data = mod:GetData(player)
+	if data.OthalaClone then
+		if not PickingUp(player) and not player.QueuedItem.Item then
+			player:AnimateCollectible(data.OthalaClone[1],"UseItem","PlayerPickup")
+			player:QueueItem(Isaac.GetItemConfig():GetCollectible(data.OthalaClone[1]))
+			table.remove(data.OthalaClone,1)
+		end
+		if #data.OthalaClone == 0 then
+			data.OthalaClone = nil
+		end
+	end
+end
+mod:AddCallback(ModCallbacks.MC_POST_PLAYER_UPDATE, mod.OthalaDuplicatePickup)
 
 function mod:UseSowilo(sowilo, player, useflags)
 	if GiantBookAPI then
@@ -176,6 +204,17 @@ function mod:UseIngwaz(ingwaz, player, useflags)
 	end
 end
 mod:AddCallback(ModCallbacks.MC_USE_CARD, mod.UseIngwaz, IngwazID)
+
+function mod:GetData(entity)
+	if entity and entity.GetData then
+		local data = entity:GetData()
+		if not data.AB_Runes then
+			data.AB_Runes = {}
+		end
+		return data.AB_Runes
+	end
+	return nil
+end
 
 function GetRandomNumber(numMin, numMax, rng)
 	if not numMax then
