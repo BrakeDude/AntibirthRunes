@@ -98,17 +98,25 @@ local function magicchalk_3f(player)
   return player:HasCollectible(magicchalk)
 end
 
-local function playGiantBook(gfx,sfx)
+local function playGiantBook(gfx,sfx,p,card)
+	local sound = nil
+	if (Options.AnnouncerVoiceMode == 2 or Options.AnnouncerVoiceMode == 0 and p:GetCardRNG(card):RandomInt(4) == 0) then
+		sound = sfx
+	end
 	if GiantBookAPI and API == 1 then
-		GiantBookAPI.playGiantBook("Appear", gfx, Color(0.2, 0.1, 0.3, 1, 0, 0, 0), Color(0.117, 0.0117, 0.2, 1, 0, 0, 0), Color(0, 0, 0, 0.8, 0, 0, 0),sfx)
-	elseif ScreenAPI and (API == 2 or not GiantBookAPI) then
-		ScreenAPI.PlayGiantbook("gfx/ui/giantbook/"..gfx)
-		SFXManager():Play(sfx,1,0)
+		GiantBookAPI.playGiantBook("Appear", gfx, Color(0.2, 0.1, 0.3, 1, 0, 0, 0), Color(0.117, 0.0117, 0.2, 1, 0, 0, 0), Color(0, 0, 0, 0.8, 0, 0, 0),sound)
+	elseif (API ~= 1 or not GiantBookAPI) then
+		if ScreenAPI and API == 2 then
+			ScreenAPI.PlayGiantbook("gfx/ui/giantbook/"..gfx)
+		end
+		if sound then
+			SFXManager():Play(sound,1,0)
+		end
 	end
 end
 
 function mod:UseGebo(gebo, player, useflags)
-	playGiantBook("Gebo.png", GeboSFX)
+	playGiantBook("Gebo.png", GeboSFX, player, GeboID)
 	local donoState = Game():GetStateFlag(GameStateFlag.STATE_DONATION_SLOT_BROKEN)
 	Game():SetStateFlag(GameStateFlag.STATE_DONATION_SLOT_BROKEN, false)
 	local slot = Isaac.Spawn(EntityType.ENTITY_SLOT, 8, -1, Game():GetRoom():FindFreePickupSpawnPosition(player.Position, 0, true), Vector.Zero, player)
@@ -122,7 +130,7 @@ end
 mod:AddCallback(ModCallbacks.MC_USE_CARD, mod.UseGebo, GeboID)
 
 function mod:UseKenaz(kenaz, player, useflags)
-	playGiantBook("Kenaz.png", KenazSFX)
+	playGiantBook("Kenaz.png", KenazSFX, player, KenazID)
 	player:AddCollectible(CollectibleType.COLLECTIBLE_TOXIC_SHOCK)
 	player:RemoveCollectible(CollectibleType.COLLECTIBLE_TOXIC_SHOCK) --this method actually works lol
 	if magicchalk_3f(player) then
@@ -147,7 +155,7 @@ end
 --mod:AddCallback(ModCallbacks.MC_PRE_NPC_UPDATE, mod.KenazPoison)
 
 function mod:UseFehu(fehu, player, useflags)
-	playGiantBook("Fehu.png", FehuSFX)
+	playGiantBook("Fehu.png", FehuSFX, player, FehuID)
 	--player:UseCard(Card.CARD_REVERSE_HERMIT, UseFlag.USE_NOANIM | UseFlag.USE_NOANNOUNCER)
 	local entities = {}
 	for _,e in pairs(Isaac.GetRoomEntities()) do
@@ -165,7 +173,7 @@ end
 mod:AddCallback(ModCallbacks.MC_USE_CARD, mod.UseFehu, FehuID)
 
 function mod:UseOthala(othala, player, useflags)
-	playGiantBook("Othala.png", OthalaSFX)
+	playGiantBook("Othala.png", OthalaSFX, player, OthalaID)
 	if player:GetCollectibleCount() > 0 then
 		local playersItems = {}
 		for item = 1,GetMaxCollectibleID() do
@@ -223,7 +231,7 @@ end
 mod:AddCallback(ModCallbacks.MC_POST_PLAYER_UPDATE, mod.OthalaDuplicatePickup)
 
 function mod:UseSowilo(sowilo, player, useflags)
-	playGiantBook("Sowilo.png", SowiloSFX)
+	playGiantBook("Sowilo.png", SowiloSFX, player, SowiloID)
 	
 	if magicchalk_3f(player) then
 		player:UseActiveItem(CollectibleType.COLLECTIBLE_FORGET_ME_NOW, UseFlag.USE_NOANIM | UseFlag.USE_NOANNOUNCER)
@@ -235,7 +243,7 @@ mod:AddCallback(ModCallbacks.MC_USE_CARD, mod.UseSowilo, SowiloID)
 
 function mod:UseIngwaz(ingwaz, player, useflags)
 	local entities = Isaac:GetRoomEntities()
-	playGiantBook("Ingwaz.png", IngwazSFX)
+	playGiantBook("Ingwaz.png", IngwazSFX, player, IngwazID)
 	for i=1, #entities do
 		if entities[i]:ToPickup() then
 			if (entities[i].Variant >= 50 and 60 >= entities[i].Variant) or entities[i].Variant == PickupVariant.PICKUP_REDCHEST or entities[i].Variant == PickupVariant.PICKUP_MOMSCHEST then
