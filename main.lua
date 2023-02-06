@@ -249,6 +249,15 @@ function mod:UseIngwaz(ingwaz, player, useflags)
 			if (entities[i].Variant >= 50 and 60 >= entities[i].Variant) or entities[i].Variant == PickupVariant.PICKUP_REDCHEST or entities[i].Variant == PickupVariant.PICKUP_MOMSCHEST then
 				entities[i]:ToPickup():TryOpenChest(player)
 			end
+			if RepentancePlusMod then
+				if entities[i].Variant == RepentancePlusMod.CustomPickups.FLESH_CHEST then
+					RepentancePlusMod.openFleshChest(entities[i])
+				elseif entities[i].Variant == RepentancePlusMod.CustomPickups.SCARLET_CHEST then
+					RepentancePlusMod.openScarletChest(entities[i])
+				elseif entities[i].Variant == RepentancePlusMod.CustomPickups.BLACK_CHEST then
+					RepentancePlusMod.openBlackChest(entities[i])
+				end
+			end
 		end
 	end
 	
