@@ -29,7 +29,9 @@ AntibirthRunes.CallOnNewRun[#AntibirthRunes.CallOnNewRun + 1] = function()
 end
 
 AntibirthRunes.CallOnContinue[#AntibirthRunes.CallOnContinue + 1] = function(data)
-    prizeVariant = data["KeyMaster"]
+    if data["KeyMaster"] then
+        prizeVariant = data["KeyMaster"]
+    end
 end
 
 AntibirthRunes.CallOnSave[#AntibirthRunes.CallOnSave + 1] = function()
@@ -81,6 +83,7 @@ local function Beggar(slot, player, uses, rng)
                 AntibirthRunes:GetData(slot).Teleport = true
             elseif var == PickupVariant.PICKUP_TRINKET then
                 SpawnPrize(EntityType.ENTITY_PICKUP, PickupVariant.PICKUP_TRINKET, TrinketType.TRINKET_PAPER_CLIP, slot.Position, rng)
+                Game():GetItemPool():RemoveTrinket(TrinketType.TRINKET_PAPER_CLIP)
                 AntibirthRunes:GetData(slot).Teleport = true
                 table.remove(prizeVariant, 11)
             else

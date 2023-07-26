@@ -75,6 +75,7 @@ local function Beggar(slot, player, uses, rng)
                 AntibirthRunes:GetData(slot).Teleport = true
             elseif var == PickupVariant.PICKUP_TRINKET then
                 SpawnPrize(EntityType.ENTITY_PICKUP, var, TrinketType.TRINKET_AAA_BATTERY, slot.Position, rng)
+                Game():GetItemPool():RemoveTrinket(TrinketType.TRINKET_AAA_BATTERY)
                 table.remove(prizeVariant, 6)
                 SFXManager():Play(SoundEffect.SOUND_SLOTSPAWN, 1, 0, false)
             elseif var == "Charge" then

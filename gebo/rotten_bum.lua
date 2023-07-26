@@ -39,8 +39,10 @@ AntibirthRunes.CallOnNewRun[#AntibirthRunes.CallOnNewRun + 1] = function()
 end
 
 AntibirthRunes.CallOnContinue[#AntibirthRunes.CallOnContinue + 1] = function(data)
-    prizeVariant = data["RottenBum"].Prize
-    trinkets = data["RottenBum"].Trinkets
+    if data["RottenBum"] then
+        prizeVariant = data["RottenBum"].Prize
+        trinkets = data["RottenBum"].Trinkets
+    end
 end
 
 AntibirthRunes.CallOnSave[#AntibirthRunes.CallOnSave + 1] = function()
@@ -90,6 +92,7 @@ local function Beggar(slot, player, uses, rng)
             elseif var == PickupVariant.PICKUP_TRINKET then
                 local i = rng:RandomInt(#trinkets) + 1
                 SpawnPrize(EntityType.ENTITY_PICKUP, var, trinkets[i], slot.Position, rng)
+                Game():GetItemPool():RemoveTrinket(trinkets[i])
                 table.remove(trinkets, i)
                 if #trinkets == 0 then
                     table.remove(prizeVariant, #prizeVariant)

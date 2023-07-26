@@ -211,6 +211,10 @@ include("gebo.fiendfolio.golden_slot")
 include("gebo.fiendfolio.vending")
 include("gebo.fiendfolio.grid_restock")
 include("gebo.andromeda.cosmic_beggar")
+include("gebo.repentanceplus.stargazer")
+include("gebo.epiphany.dice_machine")
+include("gebo.epiphany.glitch_slot")
+include("gebo.epiphany.gold_restock")
 
 function mod:UseGebo(gebo, player, useflags)
 	playGiantBook("Gebo.png", GeboSFX, player, GeboID)
@@ -252,7 +256,7 @@ function mod:GeboEffect()
 				if dead == nil or type(dead) == "boolean" and dead == true or type(dead) == "number" and dead <= 0 then
 					data.Gebo = nil
 				elseif type(dead) == "number" and dead > 0 then
-					data.Gebo.Uses = dead
+					data.Gebo.Uses = dead	
 				end
 			elseif data.PrevCollide then
 				slot.EntityCollisionClass = data.PrevCollide
