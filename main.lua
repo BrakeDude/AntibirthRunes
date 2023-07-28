@@ -24,7 +24,7 @@ local EIDSowiloRu = "Восстанавливает ранее убитых вр
 local EIDIngwazRu = "Открывает все сундуки в комнате"
 
 if EID then
-	EID:addCard(GeboID, "Spawns a donation machine", "Gebo", "en_us")
+	EID:addCard(GeboID, "Interacts with any machine or beggar in the room. Donates 7 coins to donation machines, plays beggars 6 times, plays blood machines 4 times, plays other machines 5 times. Machines and beggars have an increased chance to pay out or explode, even paying out at only one play.", "Gebo", "en_us")
 	EID:addCard(KenazID, "Poisons all enemies in the room", "Kenaz", "en_us")
 	EID:addCard(FehuID, "Applies the Midas Touch effect to half the monsters in a room for 5 seconds", "Fehu", "en_us")
 	EID:addCard(OthalaID, "Gives another copy of a random item that you already have", "Othala", "en_us")
