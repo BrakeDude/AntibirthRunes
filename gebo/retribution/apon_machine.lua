@@ -14,7 +14,7 @@ local function Machine(slot, player, uses, rng)
     return uses
 end
 
-AntibirthRunes:AddCallback(ModCallbacks.MC_POST_UPDATE, function()
+AntibirthRunes:AddCallback(ModCallbacks.MC_POST_GAME_STARTED, function()
 	if CiiruleanItems then
         if not Gebo.IsGeboSlot({Type = 6, Variant = CiiruleanItems.SLOTS.BUTAPON, SubType = -1}) then
 		    Gebo.AddMachineBeggar(CiiruleanItems.SLOTS.BUTAPON, Machine, 5, 6, -1)

@@ -1,6 +1,10 @@
 local function Machine(slot, player, uses, rng)
     local GOLD_RESTOCK = Epiphany.Slot.TURNOVER_RESTOCK
     local sprite = slot:GetSprite()
+    if sprite:IsOverlayFinished("CoinInsert") then
+        sprite:Play("Wiggle")
+        sprite:RemoveOverlay("CoinInsert")
+    end
     if not GOLD_RESTOCK:isSpriteBusy(sprite) then
         local run_save = SaveHelper.RunSave(Epiphany)
         run_save["TURNOVER_RESTOCK_DATA"]=(run_save["TURNOVER_RESTOCK_DATA"] or {})
@@ -26,7 +30,7 @@ local function Machine(slot, player, uses, rng)
     return uses
 end
 
-AntibirthRunes:AddCallback(ModCallbacks.MC_POST_UPDATE, function()
+AntibirthRunes:AddCallback(ModCallbacks.MC_POST_GAME_STARTED, function()
 	if Epiphany then
         if not Gebo.IsGeboSlot({Type = 6, Variant = Epiphany.Slot.TURNOVER_RESTOCK.ID, SubType = -1}) then
 		    Gebo.AddMachineBeggar(Epiphany.Slot.TURNOVER_RESTOCK.ID, Machine, 2, 6, -1)
