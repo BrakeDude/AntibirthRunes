@@ -210,6 +210,7 @@ include("gebo.fiendfolio.zodiac_beggar")
 include("gebo.fiendfolio.golden_slot")
 include("gebo.fiendfolio.vending")
 include("gebo.fiendfolio.grid_restock")
+include("gebo.fiendfolio.fake_beggar")
 include("gebo.andromeda.cosmic_beggar")
 include("gebo.repentanceplus.stargazer")
 include("gebo.epiphany.dice_machine")
@@ -255,7 +256,7 @@ function mod:GeboEffect()
 				
 				if dead == nil or type(dead) == "boolean" and dead == true or type(dead) == "number" and dead <= 0 then
 					data.Gebo = nil
-				elseif type(dead) == "number" and dead > 0 then
+				elseif type(dead) == "number" and dead > 0 and data.Gebo then
 					data.Gebo.Uses = dead	
 				end
 			elseif data.PrevCollide then

@@ -7,6 +7,11 @@ local function Machine(slot, player, uses, rng)
     if sprite:IsPlaying("Wiggle") and sprite:GetFrame() == 28 then
         uses = uses - 1
     end
+    if sprite:IsOverlayFinished("CoinInsert") then
+        sprite:RemoveOverlay()
+        sprite:Play("Wiggle", true)
+        SFXManager():Play(Isaac.GetSoundIdByName("Dice Machine Spinning"))
+    end
     if not DICE_MACHINE:isSpriteBusy(sprite) then
         sprite:PlayOverlay("CoinInsert", true)
 	    SFXManager():Play(SoundEffect.SOUND_COIN_SLOT)

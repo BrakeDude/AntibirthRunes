@@ -4,8 +4,12 @@ local function CraneTrigger(slot, player, uses, rng)
 		if sprite:GetAnimation() == "Death" or sprite:GetAnimation() == "Broken" then
 			return true
 		end
+		if sprite:IsOverlayFinished("CoinInsert") then
+			sprite:RemoveOverlay("CoinInsert")
+		end
 		if sprite:IsPlaying("Idle") then
 			sprite:Play("Initiate", true)
+			sprite:PlayOverlay("CoinInsert")
 		end
 		if sprite:IsFinished("Initiate") then
 			sprite:Play("Wiggle", true)
@@ -20,7 +24,8 @@ local function CraneTrigger(slot, player, uses, rng)
 				local newslot = Isaac.Spawn(6,16,0,slot.Position, Vector.Zero, nil)
 				newslot:GetSprite():Play("Regenerate",true)
 				newslot:ClearEntityFlags(EntityFlag.FLAG_APPEAR)
-				AntibirthRunes:GetData(newslot).Gebo = uses
+				local newData = AntibirthRunes:GetData(newslot)
+				newData.Gebo = {Uses = uses, rng = rng, Player = player}
 			end
 			
 		end

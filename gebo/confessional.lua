@@ -5,8 +5,12 @@ local function ConfessionalMachine(slot, player, uses, rng)
 		if sprite:GetAnimation() == "Death" or sprite:GetAnimation() == "Broken" then
 			return true
 		end
-		if sprite:IsPlaying("Idle") and not sprite:IsOverlayPlaying("CoinInsert") then
-			sprite:PlayOverlay("CoinInsert", true)
+		if sprite:IsOverlayFinished("HeartInsert") then
+			sprite:RemoveOverlay("HeartInsert")
+		end
+		if sprite:IsPlaying("Idle") and not sprite:IsOverlayPlaying("HeartInsert") then
+			sprite:PlayOverlay("HeartInsert", true)
+			sprite:Play("Initiate")
 		end
 		if sprite:IsFinished("Initiate") then
 			sprite:Play("Wiggle", true)
@@ -15,8 +19,9 @@ local function ConfessionalMachine(slot, player, uses, rng)
 			uses = uses - 1
 			sprite:Play("Idle", true)
 		end
-		if sprite:IsEventTriggered("Prize") then
+		if sprite:IsFinished("Prize") then
 			uses = uses - 1
+			sprite:Play("Idle", true)
 		end
 		if sprite:WasEventTriggered("Explosion") then
 			slot:Die()
