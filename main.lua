@@ -24,13 +24,13 @@ local EIDSowiloRu = "Восстанавливает ранее убитых вр
 local EIDIngwazRu = "Открывает все сундуки в комнате"
 
 if EID then
-	EID:addCard(GeboID, "Interacts with any machine or beggar in the room. Donates 7 coins to donation machines, plays beggars 6 times, plays blood machines 4 times, plays other machines 5 times. Machines and beggars have an increased chance to pay out or explode, even paying out at only one play.", "Gebo", "en_us")
+	EID:addCard(GeboID, "Interacts with any machine or beggar in the room. Plays beggars 6 times, plays blood machines 4 times, plays other machines 5 times. Machines and beggars have an increased chance to pay out or explode, even paying out at only one play.", "Gebo", "en_us")
 	EID:addCard(KenazID, "Poisons all enemies in the room", "Kenaz", "en_us")
 	EID:addCard(FehuID, "Applies the Midas Touch effect to half the monsters in a room for 5 seconds", "Fehu", "en_us")
 	EID:addCard(OthalaID, "Gives another copy of a random item that you already have", "Othala", "en_us")
 	EID:addCard(SowiloID, "Respawn all enemies of the room#Allows you to farm room clear rewards#!!! If used in a greed fight, it can reroll the room into a Shop", "Sowilo", "en_us")
 	EID:addCard(IngwazID, "Unlocks every chest in the room", "Ingwaz", "en_us")
-	EID:addCard(GeboID, "Aparece una máquina de donación", "Gebo", "spa")
+	EID:addCard(GeboID, "Interactúa con cualquier máquina o mendigo en la habitación. Usa mendigos 6 veces, usa donadores de sangre 4 veces, usa otras máquinas 5 veces. Las máquinas y los mendigos tienen una mayor probabilidad de pagar o explotar, incluso pagando en una sola jugada.", "Gebo", "spa")
 	EID:addCard(KenazID, "Envenena a todos los enemigos en la sala", "Kenaz", "spa")
 	EID:addCard(FehuID, "Aplica el efecto de Toque de Midas a la mitad de los monstruos en una habitación por 5 segundos", "Fehu", "spa")
 	EID:addCard(OthalaID, "Te da una copia de un objeto ya existente en tu inventario", "Othala", "spa")
