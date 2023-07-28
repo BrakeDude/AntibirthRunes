@@ -16,7 +16,7 @@ local OthalaSFX = Isaac.GetSoundIdByName("Othala")
 local SowiloSFX = Isaac.GetSoundIdByName("Sowilo")
 local IngwazSFX = Isaac.GetSoundIdByName("Ingwaz")
 
-local EIDGeboRu = "Создает машину для пожертвований"
+local EIDGeboRu = "Взаимодействует с любыми машиной или попрошайкой в ​​комнате. Попрошайки - 6 раз, донорские машины - 4 раза, остальные - 5 раз. Машины и попрошайки имеют повышенный шанс на награды или взорваться, даже если заплатят только за одну игру."
 local EIDKenazRu = "Отравляет всех врагов в комнате"
 local EIDFehuRu = "Применяет эффект Прикосновения Мидаса к половине монстров в комнате на 5 секунд"
 local EIDOthalaRu = "Дает ещё одну копию случайного имеющегося артефакта"
