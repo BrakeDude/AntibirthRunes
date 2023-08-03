@@ -216,6 +216,7 @@ include("gebo.repentanceplus.stargazer")
 include("gebo.epiphany.dice_machine")
 include("gebo.epiphany.glitch_slot")
 include("gebo.epiphany.gold_restock")
+include("gebo.epiphany.pain-o-matic")
 
 function mod:UseGebo(gebo, player, useflags)
 	playGiantBook("Gebo.png", GeboSFX, player, GeboID)
