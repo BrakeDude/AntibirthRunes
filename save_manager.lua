@@ -5,7 +5,6 @@ AntibirthRunes.CallOnContinue = {}
 AntibirthRunes.CallOnNewRun = {}
 AntibirthRunes.CallOnSave = {}
 AntibirthRunes.CallOnSettings = {}
-local PersistentRunData = {}
 
 local continue = false
 local function IsContinue()
@@ -55,7 +54,7 @@ AntibirthRunes:AddCallback(ModCallbacks.MC_POST_PLAYER_INIT, function ()
                 funct(loadedData)
             end
         end
-
+        
         for _, funct in ipairs(AntibirthRunes.CallOnNewRun) do
             funct()
         end

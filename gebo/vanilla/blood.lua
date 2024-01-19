@@ -1,5 +1,5 @@
 local function IsBloodBagUnlocked()
-    local id = CollectibleType.COLLECTIBLE_BLOOD_BAG
+	local id = CollectibleType.COLLECTIBLE_BLOOD_BAG
 	local itemConfig = Isaac.GetItemConfig()
 	local configItem = itemConfig:GetCollectible(id)
 	local hasAchievement = configItem.AchievementID >= 0

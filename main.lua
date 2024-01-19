@@ -1,7 +1,8 @@
 AntibirthRunes = RegisterMod("Antibirth Runes", 1)
 Gebo = {}
+GeboSlots = {}
 local mod = AntibirthRunes
-
+local Runes = {}
 local GeboID = Isaac.GetCardIdByName("Gebo")
 local KenazID = Isaac.GetCardIdByName("Kenaz")
 local FehuID = Isaac.GetCardIdByName("Fehu")
@@ -98,7 +99,7 @@ function mod:GetRandomNumber(numMin, numMax, rng)
 	rng = rng or RNG()
 
 	if type(rng) == "number" then
-		local seed = rng
+		local seed = math.max(1,rng)
 		rng = RNG()
 		rng:SetSeed(seed, 1)
 	end
@@ -114,6 +115,16 @@ end
 local function magicchalk_3f(player)
   local magicchalk = Isaac.GetItemIdByName("Magic Chalk")
   return player:HasCollectible(magicchalk)
+end
+
+local function PlaySND(sound, alwaysSfx, rng)
+	if not rng then
+		rng = RNG()
+		rng:SetSeed(math.max(1, Isaac.GetFrameCount()), 35)
+	end
+	if (Options.AnnouncerVoiceMode == 2 or Options.AnnouncerVoiceMode == 0 and rng:RandomInt(4) == 0 or alwaysSfx) then
+		SFXManager():Play(sound,1,0)
+	end
 end
 
 local function playGiantBook(gfx,sfx,p,card)
@@ -133,102 +144,134 @@ local function playGiantBook(gfx,sfx,p,card)
 	end
 end
 
-local GeboSlots = {
-	
-}
-
+--#region GeboAPI
 function Gebo.IsGeboSlot(_slot)
-	for _,slot in ipairs(GeboSlots) do
-		if slot.Type == _slot.Type and slot.Variant == _slot.Variant and (slot.SubType == _slot.SubType or slot.SubType == -1) then
-			return true
-		end
-	end
-	return false
-end
-
-function mod:PrintGeboList()
-	for _,slot in ipairs(GeboSlots) do
-		print(slot.Variant..":"..slot.SubType)
-	end
+    for _,slot in ipairs(GeboSlots) do
+        if slot.Type == _slot.Type and slot.Variant == _slot.Variant and (slot.SubType == _slot.SubType or slot.SubType == -1) then
+            return true
+        end
+    end
+    return false
 end
 
 function Gebo.GetGeboSlot(_slot)
-	for _,slot in ipairs(GeboSlots) do
-		if slot.Type == _slot.Type and slot.Variant == _slot.Variant and (slot.SubType == _slot.SubType or slot.SubType == -1) then
-			return slot
-		end
-	end
+    for _,slot in ipairs(GeboSlots) do
+        if slot.Type == _slot.Type and slot.Variant == _slot.Variant and (slot.SubType == _slot.SubType or slot.SubType == -1) then
+            return slot
+        end
+    end
 end
 
 function Gebo.AddMachineBeggar(variant, func, plays, _type, subtype)
-	_type = _type or 6
-	subtype = subtype or 0
-	plays = plays or 5
-	if func ~= nil and type(func) == "function" then
-		table.insert(GeboSlots, {Type = _type, Variant = variant, SubType = subtype, Function = func, Plays = plays})
-	end
+    _type = _type or 6
+    subtype = subtype or 0
+    plays = plays or 5
+    table.insert(GeboSlots, {Type = _type, Variant = variant, SubType = subtype, Function = func, Plays = plays})
+end
+
+function Gebo.ChangeRepentogonTag(variant, add, _type, subtype)
+    _type = _type or 6
+    subtype = subtype or 0
+    for key,slot in ipairs(GeboSlots) do
+        if slot.Type == _type and slot.Variant == variant and slot.SubType == subtype then
+            GeboSlots[key].REPENTOGON = add
+        end
+    end
 end
 
 function Gebo.UpdateMachineBeggar(variant, func, plays, _type, subtype)
-	if type(variant) ~= "number" then return end
-	_type = _type or 6
-	subtype = subtype or 0
-	plays = plays or 5
-	
-	for key,slot in ipairs(GeboSlots) do
-		if slot.Type == _type and slot.Variant == variant and slot.SubType == subtype then
-			GeboSlots[key].Type = _type
-			GeboSlots[key].Variant = variant
-			GeboSlots[key].SubType = subtype
-			GeboSlots[key].Plays = plays
-			if func ~= nil and type(func) == "function" then
-				GeboSlots[key].Function = func
-			end
-		end
+    if type(variant) ~= "number" then return end
+    _type = _type or 6
+    subtype = subtype or 0
+    plays = plays or 5
+    for key,slot in ipairs(GeboSlots) do
+        if slot.Type == _type and slot.Variant == variant and slot.SubType == subtype then
+            GeboSlots[key].Type = _type
+            GeboSlots[key].Variant = variant
+            GeboSlots[key].SubType = subtype
+            GeboSlots[key].Plays = plays
+            if func ~= nil and type(func) == "function" then
+                GeboSlots[key].Function = func
+            end
+        end
+    end
+end
+--#endregion
+
+local geboVanillaSlotScripts =
+{
+	"crane",
+	"fortune",
+	"slot",
+	"blood",
+	"confessional",
+	"restock",
+	"beggar",
+	"devil_beggar",
+	"key_master",
+	"bomb_bum",
+	"battery_bum",
+	"rotten_bum",
+	"repentogon"
+}
+
+local geboModdedSlotScripts =
+{
+	"retribution.swine_beggar",
+	"retribution.apon_machine",
+	"fiendfolio.cosplay_beggar",
+	"fiendfolio.evil_beggar",
+	"fiendfolio.robot_fortune_teller",
+	"fiendfolio.zodiac_beggar",
+	"fiendfolio.golden_slot",
+	"fiendfolio.vending",
+	"fiendfolio.grid_restock",
+	"fiendfolio.fake_beggar",
+	"andromeda.cosmic_beggar",
+	"repentanceplus.stargazer",
+	"epiphany.dice_machine",
+	"epiphany.glitch_slot",
+	"epiphany.gold_restock",
+	"epiphany.pain-o-matic",
+}
+
+do
+	for _,script in pairs(geboVanillaSlotScripts) do
+		include("gebo.vanilla."..script)
+	end
+	for _,script in pairs(geboModdedSlotScripts) do
+		include("gebo."..script)
 	end
 end
 
-include("save_manager")
-include("gebo.crane")
-include("gebo.fortune")
-include("gebo.slot")
-include("gebo.blood")
-include("gebo.confessional")
-include("gebo.restock")
-include("gebo.beggar")
-include("gebo.devil_beggar")
-include("gebo.key_master")
-include("gebo.bomb_bum")
-include("gebo.battery_bum")
-include("gebo.rotten_bum")
-include("gebo.retribution.swine_beggar")
-include("gebo.retribution.apon_machine")
-include("gebo.fiendfolio.cosplay_beggar")
-include("gebo.fiendfolio.evil_beggar")
-include("gebo.fiendfolio.robot_fortune_teller")
-include("gebo.fiendfolio.zodiac_beggar")
-include("gebo.fiendfolio.golden_slot")
-include("gebo.fiendfolio.vending")
-include("gebo.fiendfolio.grid_restock")
-include("gebo.fiendfolio.fake_beggar")
-include("gebo.andromeda.cosmic_beggar")
-include("gebo.repentanceplus.stargazer")
-include("gebo.epiphany.dice_machine")
-include("gebo.epiphany.glitch_slot")
-include("gebo.epiphany.gold_restock")
-include("gebo.epiphany.pain-o-matic")
-
-function mod:UseGebo(gebo, player, useflags)
-	playGiantBook("Gebo.png", GeboSFX, player, GeboID)
-	local slots = Isaac.GetRoomEntities()
+function Runes:UseGebo(gebo, player, useflags)
+	if REPENTOGON then
+		ItemOverlay.Show(Isaac.GetGiantBookIdByName("Gebo"), 0 , player)
+		PlaySND(GeboSFX)
+	else
+		playGiantBook("Gebo.png", GeboSFX, player, GeboID)
+	end
+	local slots = {}
+	for _,slot in ripairs(Isaac.GetRoomEntities()) do
+		if Gebo.IsGeboSlot(slot) then
+			table.insert(slots, slot)
+		end
+	end
 	local rng = player:GetCardRNG(gebo)
 	for _,slot in ipairs(slots) do
-		if Gebo.IsGeboSlot(slot) and slot:GetSprite():GetAnimation() ~= "Broken" and slot:GetSprite():GetAnimation() ~= "Death" then
-			if not mod:GetData(slot).Gebo then
-				rng:SetSeed(slot.InitSeed + Random(), 35)
-				mod:GetData(slot).Gebo = {Uses = Gebo.GetGeboSlot(slot).Plays, rng = rng, Player = player}
+		if slot:GetSprite():GetAnimation() ~= "Broken" and slot:GetSprite():GetAnimation() ~= "Death" then
+			if Gebo.GetGeboSlot(slot).REPENTOGON then
+				if not mod:GetData(slot).GeboUses then
+					mod:GetData(slot).GeboUses = 0
+				end
+				mod:GetData(slot).GeboUses = mod:GetData(slot).GeboUses + Gebo.GetGeboSlot(slot).Plays
 			else
-				mod:GetData(slot).Gebo.Uses = mod:GetData(slot).Gebo.Uses + Gebo.GetGeboSlot(slot).Plays
+				if not mod:GetData(slot).Gebo then
+					rng:SetSeed(slot.InitSeed + Random(), 35)
+					mod:GetData(slot).Gebo = {Uses = Gebo.GetGeboSlot(slot).Plays, rng = rng, Player = player}
+				else
+					mod:GetData(slot).Gebo.Uses = mod:GetData(slot).Gebo.Uses + Gebo.GetGeboSlot(slot).Plays
+				end
 			end
 		end
 	end
@@ -237,28 +280,35 @@ function mod:UseGebo(gebo, player, useflags)
 		if Gebo.IsGeboSlot(slot) then
 			local newslot = Isaac.Spawn(slot.Type, slot.Variant, slot.SubType, Game():GetRoom():FindFreeTilePosition(slot.Position, 9999), Vector.Zero, nil)
 			rng:SetSeed(newslot.InitSeed + Random(), 35)
-			mod:GetData(newslot).Gebo = {Uses = Gebo.GetGeboSlot(slot).Plays, rng = rng, Player = player}
+			if Gebo.GetGeboSlot(slot).REPENTOGON then
+				mod:GetData(newslot).GeboUses = Gebo.GetGeboSlot(slot).Plays
+			else
+				mod:GetData(newslot).Gebo = {Uses = Gebo.GetGeboSlot(slot).Plays, rng = rng, Player = player}
+			end
 			SFXManager():Play(SoundEffect.SOUND_SLOTSPAWN, 1, 0, false)
 		end
 	end
 end
+mod:AddCallback(ModCallbacks.MC_USE_CARD, Runes.UseGebo, GeboID)
 
-function mod:GeboEffect()
+function Runes:GeboEffect()
 	for _,slot in ipairs(Isaac.GetRoomEntities()) do
 		if Gebo.IsGeboSlot(slot) then
 			local data = mod:GetData(slot)
+			local slotData = Gebo.GetGeboSlot(slot)
 			if data.Gebo ~= nil then
-				if not data.PrevCollide then
-					data.PrevCollide = slot.EntityCollisionClass
-					slot.EntityCollisionClass = EntityCollisionClass.ENTCOLL_ENEMIES
-				end
-				local slotData = Gebo.GetGeboSlot(slot)
-				local dead = slotData.Function(slot, data.Gebo.Player, data.Gebo.Uses, data.Gebo.rng)
-				
-				if dead == nil or type(dead) == "boolean" and dead == true or type(dead) == "number" and dead <= 0 then
-					data.Gebo = nil
-				elseif type(dead) == "number" and dead > 0 and data.Gebo then
-					data.Gebo.Uses = dead	
+				if type(slotData.Function) == "function" then
+					if not data.PrevCollide then
+						data.PrevCollide = slot.EntityCollisionClass
+						slot.EntityCollisionClass = EntityCollisionClass.ENTCOLL_ENEMIES
+					end
+					local dead = slotData.Function(slot, data.Gebo.Player, data.Gebo.Uses, data.Gebo.rng)
+					
+					if dead == nil or type(dead) == "boolean" and dead == true or type(dead) == "number" and dead <= 0 then
+						data.Gebo = nil
+					elseif type(dead) == "number" and dead > 0 then
+						data.Gebo.Uses = dead	
+					end
 				end
 			elseif data.PrevCollide then
 				slot.EntityCollisionClass = data.PrevCollide
@@ -267,50 +317,30 @@ function mod:GeboEffect()
 		end
 	end
 end
-mod:AddCallback(ModCallbacks.MC_POST_UPDATE, mod.GeboEffect)
+mod:AddCallback(ModCallbacks.MC_POST_UPDATE, Runes.GeboEffect)
 
---[[function mod:UseGebo(gebo, player, useflags)
-	playGiantBook("Gebo.png", GeboSFX, player, GeboID)
-	local donoState = Game():GetStateFlag(GameStateFlag.STATE_DONATION_SLOT_BROKEN)
-	Game():SetStateFlag(GameStateFlag.STATE_DONATION_SLOT_BROKEN, false)
-	local slot = Isaac.Spawn(EntityType.ENTITY_SLOT, 8, -1, Game():GetRoom():FindFreePickupSpawnPosition(player.Position, 0, true), Vector.Zero, player)
-	Isaac.Spawn(EntityType.ENTITY_EFFECT, EffectVariant.POOF01, -1, slot.Position, slot.Velocity, slot)
-	Game():SetStateFlag(GameStateFlag.STATE_DONATION_SLOT_BROKEN, donoState)
-	if magicchalk_3f(player) then
-		local restock = Isaac.Spawn(EntityType.ENTITY_SLOT, 10, -1, Game():GetRoom():FindFreePickupSpawnPosition(player.Position, 0, true), Vector.Zero, player)
-		Isaac.Spawn(EntityType.ENTITY_EFFECT, EffectVariant.POOF01, -1, restock.Position, restock.Velocity, restock)
+function Runes:UseKenaz(kenaz, player, useflags)
+	if REPENTOGON then
+		ItemOverlay.Show(Isaac.GetGiantBookIdByName("Kenaz"), 0 , player)
+		PlaySND(KenazSFX)
+	else
+		playGiantBook("Kenaz.png", KenazSFX, player, KenazID)
 	end
-end]]
-mod:AddCallback(ModCallbacks.MC_USE_CARD, mod.UseGebo, GeboID)
-
-function mod:UseKenaz(kenaz, player, useflags)
-	playGiantBook("Kenaz.png", KenazSFX, player, KenazID)
-	player:AddCollectible(CollectibleType.COLLECTIBLE_TOXIC_SHOCK)
-	player:RemoveCollectible(CollectibleType.COLLECTIBLE_TOXIC_SHOCK) --this method actually works lol
+	player:AddCollectible(CollectibleType.COLLECTIBLE_TOXIC_SHOCK, 0, false, 0, 0)
+	player:RemoveCollectible(CollectibleType.COLLECTIBLE_TOXIC_SHOCK, true, 0, true)
 	if magicchalk_3f(player) then
 		player:UseActiveItem(CollectibleType.COLLECTIBLE_MEGA_BEAN, UseFlag.USE_NOANIM | UseFlag.USE_NOANNOUNCER)
 	end
 end
-mod:AddCallback(ModCallbacks.MC_USE_CARD, mod.UseKenaz, KenazID)
+mod:AddCallback(ModCallbacks.MC_USE_CARD, Runes.UseKenaz, KenazID)
 
-function mod:KenazPoison(entity)
-	local player = Isaac.GetPlayer(0)
-	if entity:GetData()["Poison"] then
-		if entity:GetData()["Poison"] > 0 then
-			local ranDamage = mod:GetRandomFloat(1.0, 3.5, player:GetCardRNG(KenazID))
-			entity:AddPoison(EntityRef(player), 22, ranDamage)
-			entity:GetData()["Poison"] = entity:GetData()["Poison"] - 1
-			print("poison")
-		else 
-			entity:GetData()["Poison"] = nil
-		end
+function Runes:UseFehu(fehu, player, useflags)
+	if REPENTOGON then
+		ItemOverlay.Show(Isaac.GetGiantBookIdByName("Fehu"), 0 , player)
+		PlaySND(FehuSFX)
+	else
+		playGiantBook("Fehu.png", FehuSFX, player, FehuID)
 	end
-end
---mod:AddCallback(ModCallbacks.MC_PRE_NPC_UPDATE, mod.KenazPoison)
-
-function mod:UseFehu(fehu, player, useflags)
-	playGiantBook("Fehu.png", FehuSFX, player, FehuID)
-	--player:UseCard(Card.CARD_REVERSE_HERMIT, UseFlag.USE_NOANIM | UseFlag.USE_NOANNOUNCER)
 	local entities = {}
 	for _,e in pairs(Isaac.GetRoomEntities()) do
 		if e:IsActiveEnemy(false) and e:IsEnemy() and e:IsVulnerableEnemy() and not EntityRef(e).IsCharmed and not EntityRef(e).IsFriendly then
@@ -324,56 +354,87 @@ function mod:UseFehu(fehu, player, useflags)
 	end
 	Game():GetRoom():TurnGold()
 end
-mod:AddCallback(ModCallbacks.MC_USE_CARD, mod.UseFehu, FehuID)
+mod:AddCallback(ModCallbacks.MC_USE_CARD, Runes.UseFehu, FehuID)
 
-function mod:UseOthala(othala, player, useflags)
-	playGiantBook("Othala.png", OthalaSFX, player, OthalaID)
-	if player:GetCollectibleCount() > 0 then
-		local playersItems = {}
-		for item = 1, mod:GetMaxCollectibleID() do
-			local itemConf = Isaac.GetItemConfig():GetCollectible(item)
-			if player:HasCollectible(item) and itemConf.Type ~= ItemType.ITEM_ACTIVE 
-			and (itemConf.Tags & ItemConfig.TAG_QUEST ~= ItemConfig.TAG_QUEST)
-			then
-				for i = 1, player:GetCollectibleNum(item,true) do
-					table.insert(playersItems,item)
+function Runes:UseOthala(othala, player, useflags)
+	local data = mod:GetData(player)
+	if REPENTOGON then
+		ItemOverlay.Show(Isaac.GetGiantBookIdByName("Othala"), 0 , player)
+		local itemConfig = Isaac.GetItemConfig()
+		local rng = player:GetCardRNG(othala)
+		PlaySND(OthalaSFX, false, rng)
+		local history = player:GetHistory()
+		---@type table
+		local collectHistory = history:GetCollectiblesHistory()
+
+		local itemsTable = collectHistory
+		local index, item, collectConfig
+		local itemsToGet = magicchalk_3f(player) and 2 or 1
+		for _ = 1, itemsToGet do
+			repeat
+				index = rng:RandomInt(rng:RandomInt(#itemsTable)) + 1
+				item = itemsTable[index]:GetItemID()
+				collectConfig = itemConfig:GetCollectible(item)
+				if collectConfig.Hidden or collectConfig.Type == ItemType.ITEM_ACTIVE or collectConfig:HasTags(ItemConfig.TAG_QUEST) then
+				table.remove(itemsTable, index)
+				index = nil
+				end
+			until index or #itemsTable == 0
+			if index then
+				if not data.OthalaClone then
+					data.OthalaClone = {}
+				end
+				table.insert(data.OthalaClone,item)
+			end
+			index = nil
+		end
+	else
+		playGiantBook("Othala.png", OthalaSFX, player, OthalaID)
+		if player:GetCollectibleCount() > 0 then
+			local playersItems = {}
+			for item = 1, mod.GetMaxCollectibleID() do
+				local itemConfig = Isaac.GetItemConfig():GetCollectible(item)
+				if player:HasCollectible(item) and itemConfig.Type ~= ItemType.ITEM_ACTIVE 
+				and itemConfig.Tags & ItemConfig.TAG_QUEST ~= ItemConfig.TAG_QUEST and
+				not itemConfig.Hidden
+				then
+					for _ = 1, player:GetCollectibleNum(item,true) do
+						table.insert(playersItems,item)
+					end
+				end
+			end
+			playersItems = mod:Shuffle(playersItems)
+			if #playersItems > 0 then
+				local randomItem = player:GetCardRNG(othala):RandomInt(#playersItems)+1
+				--player:AddCollectible(playersItems[randomItem])
+				data.OthalaClone = {}
+				table.insert(data.OthalaClone,playersItems[randomItem])
+			end
+			if magicchalk_3f(player) then
+				if #playersItems > 0 then
+					local randomItem = player:GetCardRNG(othala):RandomInt(#playersItems)+1
+					table.insert(data.OthalaClone,playersItems[randomItem])
 				end
 			end
 		end
-		playersItems = mod:Shuffle(playersItems)
-		local data = mod:GetData(player)
-		if #playersItems > 0 then
-			local randomItem = player:GetCardRNG(OthalaID):RandomInt(#playersItems)+1
-			--player:AddCollectible(playersItems[randomItem])
-			data.OthalaClone = {}
-			table.insert(data.OthalaClone,playersItems[randomItem])
-		end
-		if magicchalk_3f(player) then
-			if #playersItems > 0 then
-				local randomItem = player:GetCardRNG(OthalaID):RandomInt(#playersItems)+1
-				--player:AddCollectible(playersItems[randomItem])
-				table.insert(data.OthalaClone,playersItems[randomItem])
-			end
-		end
 	end
 end
-mod:AddCallback(ModCallbacks.MC_USE_CARD, mod.UseOthala, OthalaID)
+mod:AddCallback(ModCallbacks.MC_USE_CARD, Runes.UseOthala, OthalaID)
 
 local function PickingUp(player)
 	local s = player:GetSprite()
-	for _,im in ipairs({Up,Down,Left,Right}) do
-		if s:GetAnimation() == "PickWalk"..im then
-			return true
-		end
-	end
+	if s:GetAnimation():sub(1,8) == "PickWalk" then
+		return true
+	end	
 	return false
 end
 
-function mod:OthalaDuplicatePickup(player)
+function Runes:OthalaDuplicatePickup(player)
 	local data = mod:GetData(player)
 	if data.OthalaClone then
 		if not PickingUp(player) and not player.QueuedItem.Item then
 			player:AnimateCollectible(data.OthalaClone[1],"UseItem","PlayerPickup")
+			SFXManager():Play(SoundEffect.SOUND_POWERUP1, 1, 0)
 			player:QueueItem(Isaac.GetItemConfig():GetCollectible(data.OthalaClone[1]))
 			table.remove(data.OthalaClone,1)
 		end
@@ -382,22 +443,32 @@ function mod:OthalaDuplicatePickup(player)
 		end
 	end
 end
-mod:AddCallback(ModCallbacks.MC_POST_PLAYER_UPDATE, mod.OthalaDuplicatePickup)
+mod:AddCallback(ModCallbacks.MC_POST_PLAYER_UPDATE, Runes.OthalaDuplicatePickup)
 
-function mod:UseSowilo(sowilo, player, useflags)
-	playGiantBook("Sowilo.png", SowiloSFX, player, SowiloID)
-	
+function Runes:UseSowilo(sowilo, player, useflags)
+	if REPENTOGON then
+		ItemOverlay.Show(Isaac.GetGiantBookIdByName("Sowilo"), 0 , player)
+		PlaySND(SowiloSFX)
+	else
+		playGiantBook("Sowilo.png", SowiloSFX, player, SowiloID)
+	end
+
 	if magicchalk_3f(player) then
 		player:UseActiveItem(CollectibleType.COLLECTIBLE_FORGET_ME_NOW, UseFlag.USE_NOANIM | UseFlag.USE_NOANNOUNCER)
 	else
 		player:UseActiveItem(CollectibleType.COLLECTIBLE_D7, UseFlag.USE_NOANIM | UseFlag.USE_NOANNOUNCER)
 	end
 end
-mod:AddCallback(ModCallbacks.MC_USE_CARD, mod.UseSowilo, SowiloID)
+mod:AddCallback(ModCallbacks.MC_USE_CARD, Runes.UseSowilo, SowiloID)
 
-function mod:UseIngwaz(ingwaz, player, useflags)
+function Runes:UseIngwaz(ingwaz, player, useflags)
 	local entities = Isaac:GetRoomEntities()
-	playGiantBook("Ingwaz.png", IngwazSFX, player, IngwazID)
+	if REPENTOGON then
+		ItemOverlay.Show(Isaac.GetGiantBookIdByName("Ingwaz"), 0 , player)
+		PlaySND(IngwazSFX)
+	else
+		playGiantBook("Ingwaz.png", IngwazSFX, player, IngwazID)
+	end
 	for i=1, #entities do
 		if entities[i]:ToPickup() then
 			if (entities[i].Variant >= 50 and 60 >= entities[i].Variant) or entities[i].Variant == PickupVariant.PICKUP_REDCHEST or entities[i].Variant == PickupVariant.PICKUP_MOMSCHEST then
@@ -419,7 +490,7 @@ function mod:UseIngwaz(ingwaz, player, useflags)
 		player:UseActiveItem(CollectibleType.COLLECTIBLE_DADS_KEY, UseFlag.USE_NOANIM | UseFlag.USE_NOANNOUNCER)
 	end
 end
-mod:AddCallback(ModCallbacks.MC_USE_CARD, mod.UseIngwaz, IngwazID)
+mod:AddCallback(ModCallbacks.MC_USE_CARD, Runes.UseIngwaz, IngwazID)
 
 function mod:GetData(entity)
 	if entity and entity.GetData then
@@ -436,11 +507,11 @@ function mod:GetRandomFloat(numMin, numMax, rng)
     return numMin + rng:RandomFloat() * (numMax - numMin);
 end
 
-function mod:GetMaxCollectibleID()
+function mod.GetMaxCollectibleID()
     return Isaac.GetItemConfig():GetCollectibles().Size -1
 end
 
-function mod:GetMaxTrinketID()
+function mod.GetMaxTrinketID()
     return Isaac.GetItemConfig():GetTrinkets().Size -1
 end
 
@@ -451,4 +522,15 @@ function mod:Shuffle(list)
 		shuffled[i], shuffled[j] = shuffled[j], shuffled[i]
 	end
     return shuffled
+end
+
+--ripairs stuff from revel
+function ripairs_it(t,i)
+	i=i-1
+	local v=t[i]
+	if v==nil then return v end
+	return i,v
+end
+function ripairs(t)
+	return ripairs_it, t, #t+1
 end

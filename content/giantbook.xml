@@ -1,0 +1,32 @@
+<giantbook anm2root="gfx/ui/giantbook/">
+	<entry name="Fehu" anm2="GiantBook.anm2" anim="Appear" gfx="Fehu.png">
+		<layer name="poof" r="51" g="25" b="72" a="255" />
+		<layer name="bg" r="30" g="3" b="51" a="255" />
+		<layer name="poof2" r="13" g="13" b="13" a="255" />
+	</entry>
+	<entry name="Gebo" anm2="GiantBook.anm2" anim="Appear" gfx="Gebo.png">
+		<layer name="poof" r="51" g="25" b="72" a="255" />
+		<layer name="bg" r="30" g="3" b="51" a="255" />
+		<layer name="poof2" r="13" g="13" b="13" a="255" />
+	</entry>
+	<entry name="Ingwaz" anm2="GiantBook.anm2" anim="Appear" gfx="Ingwaz.png">
+		<layer name="poof" r="51" g="25" b="72" a="255" />
+		<layer name="bg" r="30" g="3" b="51" a="255" />
+		<layer name="poof2" r="13" g="13" b="13" a="255" />
+	</entry>
+	<entry name="Kenaz" anm2="GiantBook.anm2" anim="Appear" gfx="Kenaz.png">
+		<layer name="poof" r="51" g="25" b="72" a="255" />
+		<layer name="bg" r="30" g="3" b="51" a="255" />
+		<layer name="poof2" r="13" g="13" b="13" a="255" />
+	</entry>
+	<entry name="Othala" anm2="GiantBook.anm2" anim="Appear" gfx="Othala.png">
+		<layer name="poof" r="51" g="25" b="72" a="255" />
+		<layer name="bg" r="30" g="3" b="51" a="255" />
+		<layer name="poof2" r="13" g="13" b="13" a="255" />
+	</entry>
+	<entry name="Sowilo" anm2="GiantBook.anm2" anim="Appear" gfx="Sowilo.png">
+		<layer name="poof" r="51" g="25" b="72" a="255" />
+		<layer name="bg" r="30" g="3" b="51" a="255" />
+		<layer name="poof2" r="13" g="13" b="13" a="255" />
+	</entry>
+</giantbook>
