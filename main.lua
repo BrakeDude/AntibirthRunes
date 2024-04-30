@@ -1,8 +1,12 @@
 AntibirthRunes = RegisterMod("Antibirth Runes", 1)
-Gebo = {}
-GeboSlots = {}
 local mod = AntibirthRunes
 local Runes = {}
+
+include("gebo.main")
+local TSILFolder = "antirunes-loi"
+local LOCAL_TSIL = require(TSILFolder..".TSIL")
+LOCAL_TSIL.Init(TSILFolder)
+
 local GeboID = Isaac.GetCardIdByName("Gebo")
 local KenazID = Isaac.GetCardIdByName("Kenaz")
 local FehuID = Isaac.GetCardIdByName("Fehu")
@@ -45,24 +49,29 @@ if EID then
 	EID:addCard(IngwazID, EIDIngwazRu,"Ингваз","ru")
 end
 
-include("save_manager")
-
 local useAPI = {
     [1] = "GiantBook API",
     [2] = "Screen API",
     [3] = "None",
 }
 
-local API = 1
+TSIL.SaveManager.AddPersistentVariable(AntibirthRunes, "GiantBookAPI", 1, TSIL.Enums.VariablePersistenceMode.NONE, true)
+if not REPENTOGON then
+	TSIL.SaveManager.AddPersistentVariable(AntibirthRunes, "GeboData", Gebo.GetSaveData(), TSIL.Enums.VariablePersistenceMode.RESET_RUN)
 
-AntibirthRunes.CallOnSave[#AntibirthRunes.CallOnSave + 1] = function()
-	return "API", API, nil
-end
+	mod:AddCallback(ModCallbacks.MC_PRE_GAME_EXIT, function(_, isExit)
+		TSIL.SaveManager.SetPersistentVariable(AntibirthRunes, "GeboData", Gebo.GetSaveData())
+		TSIL.SaveManager.SaveToDisk()
+	end)
 
-AntibirthRunes.CallOnSettings[#AntibirthRunes.CallOnSettings + 1] = function(data)
-    if data["API"] then
-		API = data["API"]
-	end
+	mod:AddPriorityCallback(ModCallbacks.MC_POST_GAME_STARTED, CallbackPriority.LATE, function(_, isContinue)
+		if isContinue and AntibirthRunes:HasData() then
+			TSIL.SaveManager.LoadFromDisk()
+			Gebo.LoadSaveData(TSIL.SaveManager.GetPersistentVariable(AntibirthRunes, "GeboData"))
+		else
+			Gebo.ResetSaveData()
+		end
+	end)
 end
 
 if ModConfigMenu then
@@ -75,41 +84,19 @@ if ModConfigMenu then
     {
         Type = ModConfigMenu.OptionType.NUMBER,
         CurrentSetting = function()
-            return API
+            return TSIL.SaveManager.GetPersistentVariable(AntibirthRunes, "GiantBookAPI")
         end,
         Default = 1,
         Minimum = 1,
         Maximum = 3,
         Display = function()
-            return 'Preffered API to use: '..useAPI[API]
+            return 'Preffered API to use: '..useAPI[TSIL.SaveManager.GetPersistentVariable(AntibirthRunes, "GiantBookAPI")]
         end,
         OnChange = function(currentNum)
-            API = currentNum
+            TSIL.SaveManager.SetPersistentVariable(AntibirthRunes, "GiantBookAPI", currentNum)
         end,
         Info = "Preffered API for animations."
     })
-end
-
-function mod:GetRandomNumber(numMin, numMax, rng)
-	if not numMax then
-		numMax = numMin
-		numMin = nil
-	end
-	
-	rng = rng or RNG()
-
-	if type(rng) == "number" then
-		local seed = math.max(1,rng)
-		rng = RNG()
-		rng:SetSeed(seed, 1)
-	end
-	
-	if numMin and numMax then
-		return rng:Next() % (numMax - numMin + 1) + numMin
-	elseif numMax then
-		return rng:Next() % numMax
-	end
-	return rng:Next()
 end
 
 local function magicchalk_3f(player)
@@ -132,6 +119,7 @@ local function playGiantBook(gfx,sfx,p,card)
 	if (Options.AnnouncerVoiceMode == 2 or Options.AnnouncerVoiceMode == 0 and p:GetCardRNG(card):RandomInt(4) == 0) then
 		sound = sfx
 	end
+	local API = TSIL.SaveManager.GetPersistentVariable(AntibirthRunes, "GiantBookAPI")
 	if GiantBookAPI and API == 1 then
 		GiantBookAPI.playGiantBook("Appear", gfx, Color(0.2, 0.1, 0.3, 1, 0, 0, 0), Color(0.117, 0.0117, 0.2, 1, 0, 0, 0), Color(0, 0, 0, 0.8, 0, 0, 0),sound)
 	elseif (API ~= 1 or not GiantBookAPI) then
@@ -141,106 +129,6 @@ local function playGiantBook(gfx,sfx,p,card)
 		if sound then
 			SFXManager():Play(sound,1,0)
 		end
-	end
-end
-
---#region GeboAPI
-function Gebo.IsGeboSlot(_slot)
-    for _,slot in ipairs(GeboSlots) do
-        if slot.Type == _slot.Type and slot.Variant == _slot.Variant and (slot.SubType == _slot.SubType or slot.SubType == -1) then
-            return true
-        end
-    end
-    return false
-end
-
-function Gebo.GetGeboSlot(_slot)
-    for _,slot in ipairs(GeboSlots) do
-        if slot.Type == _slot.Type and slot.Variant == _slot.Variant and (slot.SubType == _slot.SubType or slot.SubType == -1) then
-            return slot
-        end
-    end
-end
-
-function Gebo.AddMachineBeggar(variant, func, plays, _type, subtype)
-    _type = _type or 6
-    subtype = subtype or 0
-    plays = plays or 5
-    table.insert(GeboSlots, {Type = _type, Variant = variant, SubType = subtype, Function = func, Plays = plays})
-end
-
-function Gebo.ChangeRepentogonTag(variant, add, _type, subtype)
-    _type = _type or 6
-    subtype = subtype or 0
-    for key,slot in ipairs(GeboSlots) do
-        if slot.Type == _type and slot.Variant == variant and slot.SubType == subtype then
-            GeboSlots[key].REPENTOGON = add
-        end
-    end
-end
-
-function Gebo.UpdateMachineBeggar(variant, func, plays, _type, subtype)
-    if type(variant) ~= "number" then return end
-    _type = _type or 6
-    subtype = subtype or 0
-    plays = plays or 5
-    for key,slot in ipairs(GeboSlots) do
-        if slot.Type == _type and slot.Variant == variant and slot.SubType == subtype then
-            GeboSlots[key].Type = _type
-            GeboSlots[key].Variant = variant
-            GeboSlots[key].SubType = subtype
-            GeboSlots[key].Plays = plays
-            if func ~= nil and type(func) == "function" then
-                GeboSlots[key].Function = func
-            end
-        end
-    end
-end
---#endregion
-
-local geboVanillaSlotScripts =
-{
-	"crane",
-	"fortune",
-	"slot",
-	"blood",
-	"confessional",
-	"restock",
-	"beggar",
-	"devil_beggar",
-	"key_master",
-	"bomb_bum",
-	"battery_bum",
-	"rotten_bum",
-	"repentogon"
-}
-
-local geboModdedSlotScripts =
-{
-	"retribution.swine_beggar",
-	"retribution.apon_machine",
-	"fiendfolio.cosplay_beggar",
-	"fiendfolio.evil_beggar",
-	"fiendfolio.robot_fortune_teller",
-	"fiendfolio.zodiac_beggar",
-	"fiendfolio.golden_slot",
-	"fiendfolio.vending",
-	"fiendfolio.grid_restock",
-	"fiendfolio.fake_beggar",
-	"andromeda.cosmic_beggar",
-	"repentanceplus.stargazer",
-	"epiphany.dice_machine",
-	"epiphany.glitch_slot",
-	"epiphany.gold_restock",
-	"epiphany.pain-o-matic",
-}
-
-do
-	for _,script in pairs(geboVanillaSlotScripts) do
-		include("gebo.vanilla."..script)
-	end
-	for _,script in pairs(geboModdedSlotScripts) do
-		include("gebo."..script)
 	end
 end
 
@@ -261,16 +149,16 @@ function Runes:UseGebo(gebo, player, useflags)
 	for _,slot in ipairs(slots) do
 		if slot:GetSprite():GetAnimation() ~= "Broken" and slot:GetSprite():GetAnimation() ~= "Death" then
 			if Gebo.GetGeboSlot(slot).REPENTOGON then
-				if not mod:GetData(slot).GeboUses then
-					mod:GetData(slot).GeboUses = 0
+				if not Gebo.GetData(slot).GeboUses then
+					Gebo.GetData(slot).GeboUses = 0
 				end
-				mod:GetData(slot).GeboUses = mod:GetData(slot).GeboUses + Gebo.GetGeboSlot(slot).Plays
+				Gebo.GetData(slot).GeboUses = Gebo.GetData(slot).GeboUses + Gebo.GetGeboSlot(slot).Plays
 			else
-				if not mod:GetData(slot).Gebo then
+				if not Gebo.GetData(slot).Gebo then
 					rng:SetSeed(slot.InitSeed + Random(), 35)
-					mod:GetData(slot).Gebo = {Uses = Gebo.GetGeboSlot(slot).Plays, rng = rng, Player = player}
+					Gebo.GetData(slot).Gebo = {Uses = Gebo.GetGeboSlot(slot).Plays, rng = rng, Player = player}
 				else
-					mod:GetData(slot).Gebo.Uses = mod:GetData(slot).Gebo.Uses + Gebo.GetGeboSlot(slot).Plays
+					Gebo.GetData(slot).Gebo.Uses = Gebo.GetData(slot).Gebo.Uses + Gebo.GetGeboSlot(slot).Plays
 				end
 			end
 		end
@@ -281,43 +169,15 @@ function Runes:UseGebo(gebo, player, useflags)
 			local newslot = Isaac.Spawn(slot.Type, slot.Variant, slot.SubType, Game():GetRoom():FindFreeTilePosition(slot.Position, 9999), Vector.Zero, nil)
 			rng:SetSeed(newslot.InitSeed + Random(), 35)
 			if Gebo.GetGeboSlot(slot).REPENTOGON then
-				mod:GetData(newslot).GeboUses = Gebo.GetGeboSlot(slot).Plays
+				Gebo.GetData(newslot).GeboUses = Gebo.GetGeboSlot(slot).Plays
 			else
-				mod:GetData(newslot).Gebo = {Uses = Gebo.GetGeboSlot(slot).Plays, rng = rng, Player = player}
+				Gebo.GetData(newslot).Gebo = {Uses = Gebo.GetGeboSlot(slot).Plays, rng = rng, Player = player}
 			end
 			SFXManager():Play(SoundEffect.SOUND_SLOTSPAWN, 1, 0, false)
 		end
 	end
 end
 mod:AddCallback(ModCallbacks.MC_USE_CARD, Runes.UseGebo, GeboID)
-
-function Runes:GeboEffect()
-	for _,slot in ipairs(Isaac.GetRoomEntities()) do
-		if Gebo.IsGeboSlot(slot) then
-			local data = mod:GetData(slot)
-			local slotData = Gebo.GetGeboSlot(slot)
-			if data.Gebo ~= nil then
-				if type(slotData.Function) == "function" then
-					if not data.PrevCollide then
-						data.PrevCollide = slot.EntityCollisionClass
-						slot.EntityCollisionClass = EntityCollisionClass.ENTCOLL_ENEMIES
-					end
-					local dead = slotData.Function(slot, data.Gebo.Player, data.Gebo.Uses, data.Gebo.rng)
-					
-					if dead == nil or type(dead) == "boolean" and dead == true or type(dead) == "number" and dead <= 0 then
-						data.Gebo = nil
-					elseif type(dead) == "number" and dead > 0 then
-						data.Gebo.Uses = dead	
-					end
-				end
-			elseif data.PrevCollide then
-				slot.EntityCollisionClass = data.PrevCollide
-				data.PrevCollide = nil
-			end
-		end
-	end
-end
-mod:AddCallback(ModCallbacks.MC_POST_UPDATE, Runes.GeboEffect)
 
 function Runes:UseKenaz(kenaz, player, useflags)
 	if REPENTOGON then
@@ -501,10 +361,6 @@ function mod:GetData(entity)
 		return data.AB_Runes
 	end
 	return nil
-end
-
-function mod:GetRandomFloat(numMin, numMax, rng)
-    return numMin + rng:RandomFloat() * (numMax - numMin);
 end
 
 function mod.GetMaxCollectibleID()

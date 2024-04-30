@@ -23,7 +23,7 @@ local function Beggar(slot, player, uses, rng)
     return uses
 end
 
-AntibirthRunes:AddCallback(ModCallbacks.MC_POST_GAME_STARTED, function()
+Gebo:AddCallback(ModCallbacks.MC_POST_GAME_STARTED, function()
 	if ANDROMEDA then
         if not Gebo.IsGeboSlot({Type = 6, Variant = Isaac.GetEntityVariantByName("Wisp Wizard"), SubType = -1}) then
 		    Gebo.AddMachineBeggar(Isaac.GetEntityVariantByName("Wisp Wizard"), Beggar, 6, 6, -1)

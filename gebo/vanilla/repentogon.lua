@@ -23,7 +23,7 @@ local machineSFX = {
 }
 
 function SlotLocal:UpdateSlot(slot)
-    local data = AntibirthRunes:GetData(slot)
+    local data = Gebo.GetData(slot)
     if data.GeboUses and data.GeboUses > 0 then
         local sprite = slot:GetSprite()
         if slot:GetState() == 1 then
@@ -38,14 +38,14 @@ function SlotLocal:UpdateSlot(slot)
         end
     end
 end
-AntibirthRunes:AddCallback(ModCallbacks.MC_POST_SLOT_UPDATE, SlotLocal.UpdateSlot, SlotVariant.SLOT_MACHINE)
-AntibirthRunes:AddCallback(ModCallbacks.MC_POST_SLOT_UPDATE, SlotLocal.UpdateSlot, SlotVariant.BLOOD_DONATION_MACHINE)
-AntibirthRunes:AddCallback(ModCallbacks.MC_POST_SLOT_UPDATE, SlotLocal.UpdateSlot, SlotVariant.FORTUNE_TELLING_MACHINE)
-AntibirthRunes:AddCallback(ModCallbacks.MC_POST_SLOT_UPDATE, SlotLocal.UpdateSlot, SlotVariant.CRANE_GAME)
-AntibirthRunes:AddCallback(ModCallbacks.MC_POST_SLOT_UPDATE, SlotLocal.UpdateSlot, SlotVariant.CONFESSIONAL)
+Gebo:AddCallback(ModCallbacks.MC_POST_SLOT_UPDATE, SlotLocal.UpdateSlot, SlotVariant.SLOT_MACHINE)
+Gebo:AddCallback(ModCallbacks.MC_POST_SLOT_UPDATE, SlotLocal.UpdateSlot, SlotVariant.BLOOD_DONATION_MACHINE)
+Gebo:AddCallback(ModCallbacks.MC_POST_SLOT_UPDATE, SlotLocal.UpdateSlot, SlotVariant.FORTUNE_TELLING_MACHINE)
+Gebo:AddCallback(ModCallbacks.MC_POST_SLOT_UPDATE, SlotLocal.UpdateSlot, SlotVariant.CRANE_GAME)
+Gebo:AddCallback(ModCallbacks.MC_POST_SLOT_UPDATE, SlotLocal.UpdateSlot, SlotVariant.CONFESSIONAL)
 
 function SlotLocal:UpdateDono(slot)
-    local data = AntibirthRunes:GetData(slot)
+    local data = Gebo.GetData(slot)
     if data.GeboUses and data.GeboUses > 0 then
         local sprite = slot:GetSprite()
         if slot:GetState() == 3 then
@@ -64,12 +64,12 @@ function SlotLocal:UpdateDono(slot)
         end
     end
 end
-AntibirthRunes:AddCallback(ModCallbacks.MC_POST_SLOT_UPDATE, SlotLocal.UpdateDono, SlotVariant.DONATION_MACHINE)
-AntibirthRunes:AddCallback(ModCallbacks.MC_POST_SLOT_UPDATE, SlotLocal.UpdateDono, SlotVariant.GREED_DONATION_MACHINE)
-AntibirthRunes:AddCallback(ModCallbacks.MC_POST_SLOT_UPDATE, SlotLocal.UpdateDono, SlotVariant.SHOP_RESTOCK_MACHINE)
+Gebo:AddCallback(ModCallbacks.MC_POST_SLOT_UPDATE, SlotLocal.UpdateDono, SlotVariant.DONATION_MACHINE)
+Gebo:AddCallback(ModCallbacks.MC_POST_SLOT_UPDATE, SlotLocal.UpdateDono, SlotVariant.GREED_DONATION_MACHINE)
+Gebo:AddCallback(ModCallbacks.MC_POST_SLOT_UPDATE, SlotLocal.UpdateDono, SlotVariant.SHOP_RESTOCK_MACHINE)
 
 function SlotLocal:UpdateBeggar(slot)
-    local data = AntibirthRunes:GetData(slot)
+    local data = Gebo.GetData(slot)
     local sprite = slot:GetSprite()
     if data.GeboUses and data.GeboUses > 0 then
         if slot:GetState() == 4 then
@@ -92,9 +92,9 @@ function SlotLocal:UpdateBeggar(slot)
         end
     end
 end
-AntibirthRunes:AddCallback(ModCallbacks.MC_POST_SLOT_UPDATE, SlotLocal.UpdateBeggar, SlotVariant.BEGGAR)
-AntibirthRunes:AddCallback(ModCallbacks.MC_POST_SLOT_UPDATE, SlotLocal.UpdateBeggar, SlotVariant.DEVIL_BEGGAR)
-AntibirthRunes:AddCallback(ModCallbacks.MC_POST_SLOT_UPDATE, SlotLocal.UpdateBeggar, SlotVariant.KEY_MASTER)
-AntibirthRunes:AddCallback(ModCallbacks.MC_POST_SLOT_UPDATE, SlotLocal.UpdateBeggar, SlotVariant.BOMB_BUM)
-AntibirthRunes:AddCallback(ModCallbacks.MC_POST_SLOT_UPDATE, SlotLocal.UpdateBeggar, SlotVariant.BATTERY_BUM)
-AntibirthRunes:AddCallback(ModCallbacks.MC_POST_SLOT_UPDATE, SlotLocal.UpdateBeggar, SlotVariant.ROTTEN_BEGGAR)
+Gebo:AddCallback(ModCallbacks.MC_POST_SLOT_UPDATE, SlotLocal.UpdateBeggar, SlotVariant.BEGGAR)
+Gebo:AddCallback(ModCallbacks.MC_POST_SLOT_UPDATE, SlotLocal.UpdateBeggar, SlotVariant.DEVIL_BEGGAR)
+Gebo:AddCallback(ModCallbacks.MC_POST_SLOT_UPDATE, SlotLocal.UpdateBeggar, SlotVariant.KEY_MASTER)
+Gebo:AddCallback(ModCallbacks.MC_POST_SLOT_UPDATE, SlotLocal.UpdateBeggar, SlotVariant.BOMB_BUM)
+Gebo:AddCallback(ModCallbacks.MC_POST_SLOT_UPDATE, SlotLocal.UpdateBeggar, SlotVariant.BATTERY_BUM)
+Gebo:AddCallback(ModCallbacks.MC_POST_SLOT_UPDATE, SlotLocal.UpdateBeggar, SlotVariant.ROTTEN_BEGGAR)

@@ -24,7 +24,7 @@ local function CraneTrigger(slot, player, uses, rng)
 				local newslot = Isaac.Spawn(6,16,0,slot.Position, Vector.Zero, nil)
 				newslot:GetSprite():Play("Regenerate",true)
 				newslot:ClearEntityFlags(EntityFlag.FLAG_APPEAR)
-				local newData = AntibirthRunes:GetData(newslot)
+				local newData = Gebo.GetData(newslot)
 				newData.Gebo = {Uses = uses, rng = rng, Player = player}
 			end
 			

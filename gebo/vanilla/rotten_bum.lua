@@ -1,4 +1,5 @@
-local prizeVariant = {
+Gebo.AddSaveData("RottenBumPrizeVariant", 
+{
     [1] = PickupVariant.PICKUP_HEART,
     [2] = PickupVariant.PICKUP_HEART,
     [3] = PickupVariant.PICKUP_HEART,
@@ -10,47 +11,17 @@ local prizeVariant = {
     [9] = "Fart",
     [10] = PickupVariant.PICKUP_COLLECTIBLE, 
     [11] = PickupVariant.PICKUP_TRINKET, 
-}
+})
 
-local trinkets = {
+Gebo.AddSaveData("RottenBumTrinkets",{
     TrinketType.TRINKET_FISH_HEAD,
     TrinketType.TRINKET_FISH_TAIL,
     TrinketType.TRINKET_ROTTEN_PENNY,
     TrinketType.TRINKET_BOBS_BLADDER,
-}
-
-AntibirthRunes.CallOnNewRun[#AntibirthRunes.CallOnNewRun + 1] = function()
-    prizeVariant = {
-        [1] = PickupVariant.PICKUP_HEART,
-        [2] = PickupVariant.PICKUP_HEART,
-        [3] = "Fly",
-        [4] = "Spider",
-        [5] = "Fart",
-        [6] = PickupVariant.PICKUP_COLLECTIBLE, 
-        [7] = PickupVariant.PICKUP_TRINKET, 
-    }
-    
-    trinkets = {
-        TrinketType.TRINKET_FISH_HEAD,
-        TrinketType.TRINKET_FISH_TAIL,
-        TrinketType.TRINKET_ROTTEN_PENNY,
-        TrinketType.TRINKET_BOBS_BLADDER,
-    }
-end
-
-AntibirthRunes.CallOnContinue[#AntibirthRunes.CallOnContinue + 1] = function(data)
-    if data["RottenBum"] then
-        prizeVariant = data["RottenBum"].Prize
-        trinkets = data["RottenBum"].Trinkets
-    end
-end
-
-AntibirthRunes.CallOnSave[#AntibirthRunes.CallOnSave + 1] = function()
-    return "RottenBum", {Prize = prizeVariant, Trinkets = trinkets}, true
-end
+})
 
 local function SpawnPrize(type, variant, subtype, pos, rng)
-    local x,y = AntibirthRunes:GetRandomNumber(-4, 4, rng), AntibirthRunes:GetRandomNumber(2,4, rng)
+    local x,y = TSIL.Random.GetRandomInt(-4, 4, rng), TSIL.Random.GetRandomInt(2,4, rng)
     if x < 0 then x = math.min(x,-1) elseif x > 0 then x = math.max(x,1) end
     Isaac.Spawn(type, variant, subtype, pos, Vector(x,y), nil)
 end
@@ -74,7 +45,7 @@ local function Beggar(slot, player, uses, rng)
             sprite:Play("Prize", true)
         end
         if sprite:IsFinished("Prize") then
-            if AntibirthRunes:GetData(slot).Teleport then
+            if Gebo.GetData(slot).Teleport then
                 sprite:Play("Teleport", true)
             else
                 sprite:Play("Idle", true)
@@ -82,26 +53,30 @@ local function Beggar(slot, player, uses, rng)
             end
         end
         if sprite:IsEventTriggered("Prize") then
+            local prizeVariant = Gebo.GetSaveDataByKey("RottenBumPrizeVariant")
             local var = prizeVariant[rng:RandomInt(#prizeVariant)+1]
             if var ~= "Fart" then SFXManager():Play(SoundEffect.SOUND_SLOTSPAWN, 1, 0, false) end
             if var == PickupVariant.PICKUP_COLLECTIBLE then
                 local itemPool = Game():GetItemPool()
                 local poolItem = itemPool:GetCollectible(ItemPoolType.POOL_ROTTEN_BEGGAR, true, slot.DropSeed)
                 Isaac.Spawn(EntityType.ENTITY_PICKUP, var, poolItem, Game():GetRoom():FindFreePickupSpawnPosition(slot.Position + Vector(0, 40)), Vector.Zero, nil)
-                AntibirthRunes:GetData(slot).Teleport = true
+                Gebo.GetData(slot).Teleport = true
             elseif var == PickupVariant.PICKUP_TRINKET then
+                local trinkets = Gebo.GetSaveDataByKey("RottenBumTrinkets")
                 local i = rng:RandomInt(#trinkets) + 1
                 SpawnPrize(EntityType.ENTITY_PICKUP, var, trinkets[i], slot.Position, rng)
                 Game():GetItemPool():RemoveTrinket(trinkets[i])
                 table.remove(trinkets, i)
+                Gebo.SetSaveDataByKey("RottenBumTrinkets", trinkets)
                 if #trinkets == 0 then
                     table.remove(prizeVariant, #prizeVariant)
+                    Gebo.SetSaveDataByKey("RottenBumPrizeVariant", prizeVariant)
                 end
             elseif var == "Fly" then
                 player:AddBlueFlies(rng:RandomInt(3)+1, slot.Position, nil)
             elseif var == "Spider" then
                 for i = 1, rng:RandomInt(3) + 1 do
-                    player:ThrowBlueSpider(slot.Position, slot.Position + Vector(AntibirthRunes:GetRandomNumber(-60, 60, rng), AntibirthRunes:GetRandomNumber(20, 70, rng)))
+                    player:ThrowBlueSpider(slot.Position, slot.Position + Vector(TSIL.Random.GetRandomInt(-60, 60, rng), TSIL.Random.GetRandomInt(20, 70, rng)))
                 end
             elseif var == "Fart" then
                 Game():Fart(slot.Position, 0)

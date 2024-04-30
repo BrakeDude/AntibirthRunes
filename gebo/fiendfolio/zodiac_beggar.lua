@@ -48,7 +48,7 @@ local function Beggar(slot, player, uses, rng)
     return uses
 end
 
-AntibirthRunes:AddCallback(ModCallbacks.MC_POST_GAME_STARTED, function()
+Gebo:AddCallback(ModCallbacks.MC_POST_GAME_STARTED, function()
     if FiendFolio then
         if not Gebo.IsGeboSlot({6, FiendFolio.FF.ZodiacBeggar.Var, -1}) then
             Gebo.AddMachineBeggar(FiendFolio.FF.ZodiacBeggar.Var, Beggar, 6, 6, -1)     

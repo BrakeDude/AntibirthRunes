@@ -15,7 +15,7 @@ local function Machine(slot, player, uses, rng)
     return uses
 end
 
-AntibirthRunes:AddCallback(ModCallbacks.MC_POST_GAME_STARTED, function()
+Gebo:AddCallback(ModCallbacks.MC_POST_GAME_STARTED, function()
     if FiendFolio then
         if not Gebo.IsGeboSlot({6, 880, -1}) then
             Gebo.AddMachineBeggar(880, Machine, 5, 6, -1)     

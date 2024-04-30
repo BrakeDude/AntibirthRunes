@@ -7,7 +7,7 @@ local prizeVariant = {
 }
 
 local function SpawnPrize(type, variant, subtype, pos, rng)
-    local x,y = AntibirthRunes:GetRandomNumber(-4, 4, rng), AntibirthRunes:GetRandomNumber(2,4, rng)
+    local x,y = TSIL.Random.GetRandomInt(-4, 4, rng), TSIL.Random.GetRandomInt(2,4, rng)
     if x < 0 then x = math.min(x,-1) elseif x > 0 then x = math.max(x,1) end
     Isaac.Spawn(type, variant, subtype, pos, Vector(x,y), nil)
 end
@@ -31,7 +31,7 @@ local function Beggar(slot, player, uses, rng)
             sprite:Play("Prize", true)
         end
         if sprite:IsFinished("Prize") then
-            if AntibirthRunes:GetData(slot).Teleport then
+            if Gebo.GetData(slot).Teleport then
                 sprite:Play("Teleport", true)
             else
                 sprite:Play("Idle", true)
@@ -45,7 +45,7 @@ local function Beggar(slot, player, uses, rng)
                 local itemPool = Game():GetItemPool()
                 local poolItem = itemPool:GetCollectible(ItemPoolType.POOL_BOMB_BUM, true, slot.DropSeed)
                 Isaac.Spawn(EntityType.ENTITY_PICKUP, var, poolItem, Game():GetRoom():FindFreePickupSpawnPosition(slot.Position + Vector(0, 40)), Vector.Zero, nil)
-                AntibirthRunes:GetData(slot).Teleport = true
+                Gebo.GetData(slot).Teleport = true
             else
                 SpawnPrize(EntityType.ENTITY_PICKUP, var, 0, slot.Position, rng)
                 if var == PickupVariant.PICKUP_COIN then

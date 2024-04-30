@@ -30,7 +30,7 @@ local function Machine(slot, player, uses, rng)
     return uses
 end
 
-AntibirthRunes:AddCallback(ModCallbacks.MC_POST_GAME_STARTED, function()
+Gebo:AddCallback(ModCallbacks.MC_POST_GAME_STARTED, function()
 	if Epiphany then
         if not Gebo.IsGeboSlot({Type = 6, Variant = Epiphany.Slot.TURNOVER_RESTOCK.ID, SubType = -1}) then
 		    Gebo.AddMachineBeggar(Epiphany.Slot.TURNOVER_RESTOCK.ID, Machine, 2, 6, -1)

@@ -1,33 +1,14 @@
-local prizeVariant = {
+Gebo.AddSaveData("BatteryBumPrizeVariant", {
     [1] = "Charge",
     [2] = "Charge",
     [3] = PickupVariant.PICKUP_LIL_BATTERY,
     [4] = PickupVariant.PICKUP_LIL_BATTERY,
     [5] = PickupVariant.PICKUP_COLLECTIBLE,
     [6] = PickupVariant.PICKUP_TRINKET,
-}
-
-AntibirthRunes.CallOnNewRun[#AntibirthRunes.CallOnNewRun + 1] = function()
-    prizeVariant = {
-        [1] = "Charge",
-        [2] = "Charge",
-        [3] = PickupVariant.PICKUP_LIL_BATTERY,
-        [4] = PickupVariant.PICKUP_LIL_BATTERY,
-        [5] = PickupVariant.PICKUP_COLLECTIBLE,
-        [6] = PickupVariant.PICKUP_TRINKET,
-    }
-end
-
-AntibirthRunes.CallOnContinue[#AntibirthRunes.CallOnContinue + 1] = function(data)
-    prizeVariant = data["BatteryBum"]
-end
-
-AntibirthRunes.CallOnSave[#AntibirthRunes.CallOnSave + 1] = function()
-    return "BatteryBum", prizeVariant, true
-end
+})
 
 local function SpawnPrize(type, variant, subtype, pos, rng)
-    local x,y = AntibirthRunes:GetRandomNumber(-4, 4, rng), AntibirthRunes:GetRandomNumber(2,4, rng)
+    local x,y = TSIL.Random.GetRandomInt(-4, 4, rng), TSIL.Random.GetRandomInt(2,4, rng)
     if x < 0 then x = math.min(x,-1) elseif x > 0 then x = math.max(x,1) end
     local battery = Isaac.Spawn(type, variant, subtype, pos, Vector(x,y), nil):ToPickup()
     if battery.SubType == 4 then
@@ -58,7 +39,7 @@ local function Beggar(slot, player, uses, rng)
             sprite:Play("Prize", true)
         end
         if sprite:IsFinished("Prize") then
-            if AntibirthRunes:GetData(slot).Teleport then
+            if Gebo.GetData(slot).Teleport then
                 sprite:Play("Teleport", true)
             else
                 sprite:Play("Idle", true)
@@ -66,17 +47,19 @@ local function Beggar(slot, player, uses, rng)
             end
         end
         if sprite:IsEventTriggered("Prize") then
+            local prizeVariant = Gebo.GetSaveDataByKey("BatteryBumPrizeVariant")
             local var = prizeVariant[rng:RandomInt(#prizeVariant)+1]
             if var == PickupVariant.PICKUP_COLLECTIBLE then
                 SFXManager():Play(SoundEffect.SOUND_SLOTSPAWN, 1, 0, false)
                 local itemPool = Game():GetItemPool()
                 local poolItem = itemPool:GetCollectible(ItemPoolType.POOL_BATTERY_BUM, true, slot.DropSeed)
                 Isaac.Spawn(EntityType.ENTITY_PICKUP, var, poolItem, Game():GetRoom():FindFreePickupSpawnPosition(slot.Position + Vector(0, 40)), Vector.Zero, nil)
-                AntibirthRunes:GetData(slot).Teleport = true
+                Gebo.GetData(slot).Teleport = true
             elseif var == PickupVariant.PICKUP_TRINKET then
                 SpawnPrize(EntityType.ENTITY_PICKUP, var, TrinketType.TRINKET_AAA_BATTERY, slot.Position, rng)
                 Game():GetItemPool():RemoveTrinket(TrinketType.TRINKET_AAA_BATTERY)
                 table.remove(prizeVariant, 6)
+                Gebo.SetSaveDataByKey("BatteryBumPrizeVariant", prizeVariant)
                 SFXManager():Play(SoundEffect.SOUND_SLOTSPAWN, 1, 0, false)
             elseif var == "Charge" then
                 SFXManager():Play(SoundEffect.SOUND_BATTERYCHARGE, 1, 0, false)
@@ -89,7 +72,7 @@ local function Beggar(slot, player, uses, rng)
                 for i = 0, 2 do
                     if addCharge > 0 then
                         local colConfig = Isaac.GetItemConfig():GetCollectible(player:GetActiveItem(i))
-                        if colConfig.ChargeType ~= 2 and colConfig.MaxCharges > 0 and GetFullCharge(player, i) < colConfig.MaxCharges * 2 then
+                        if colConfig and colConfig.ChargeType ~= 2 and colConfig.MaxCharges > 0 and GetFullCharge(player, i) < colConfig.MaxCharges * 2 then
                             if colConfig.ChargeType == 1 then
                                 if GetFullCharge(player, i) < colConfig.MaxCharges then
                                     if addCharge > 1 then

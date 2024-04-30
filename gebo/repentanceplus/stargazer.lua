@@ -15,7 +15,7 @@ local function Beggar(slot, player, uses, rng)
     return uses
 end
 
-AntibirthRunes:AddCallback(ModCallbacks.MC_POST_GAME_STARTED, function()
+Gebo:AddCallback(ModCallbacks.MC_POST_GAME_STARTED, function()
 	if RepentancePlusMod then
         if not Gebo.IsGeboSlot({Type = 6, Variant = RepentancePlusMod.CustomSlots.SLOT_STARGAZER, SubType = -1}) then
 		    Gebo.AddMachineBeggar(RepentancePlusMod.CustomSlots.SLOT_STARGAZER, Beggar, 3, 6, -1)
