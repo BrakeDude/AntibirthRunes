@@ -352,6 +352,15 @@ function Runes:UseIngwaz(ingwaz, player, useflags)
 end
 mod:AddCallback(ModCallbacks.MC_USE_CARD, Runes.UseIngwaz, IngwazID)
 
+if REPENTOGON then
+	function Runes:BerkanoFix(id, delay, player)
+		if not GiantBookAPI then
+			return Isaac.GetGiantBookIdByName("New Berkano")
+		end
+	end
+	mod:AddCallback(ModCallbacks.MC_PRE_ITEM_OVERLAY_SHOW, Runes.BerkanoFix, Giantbook.BERKANO)
+end
+
 function mod:GetData(entity)
 	if entity and entity.GetData then
 		local data = entity:GetData()
