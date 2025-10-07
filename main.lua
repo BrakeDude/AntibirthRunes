@@ -155,7 +155,7 @@ function Runes:UseGebo(gebo, player, useflags)
 				Gebo.GetData(slot).GeboUses = Gebo.GetData(slot).GeboUses + Gebo.GetGeboSlot(slot).Plays
 			else
 				if not Gebo.GetData(slot).Gebo then
-					rng:SetSeed(slot.InitSeed + Random(), 35)
+					rng:SetSeed(math.max(1, slot.InitSeed + Random()), 35)
 					Gebo.GetData(slot).Gebo = {Uses = Gebo.GetGeboSlot(slot).Plays, rng = rng, Player = player}
 				else
 					Gebo.GetData(slot).Gebo.Uses = Gebo.GetData(slot).Gebo.Uses + Gebo.GetGeboSlot(slot).Plays
@@ -167,7 +167,7 @@ function Runes:UseGebo(gebo, player, useflags)
 		local slot = slots[rng:RandomInt(#slots) + 1]
 		if Gebo.IsGeboSlot(slot) then
 			local newslot = Isaac.Spawn(slot.Type, slot.Variant, slot.SubType, Game():GetRoom():FindFreeTilePosition(slot.Position, 9999), Vector.Zero, nil)
-			rng:SetSeed(newslot.InitSeed + Random(), 35)
+			rng:SetSeed(math.max(1, newslot.InitSeed + Random()), 35)
 			if Gebo.GetGeboSlot(slot).REPENTOGON then
 				Gebo.GetData(newslot).GeboUses = Gebo.GetGeboSlot(slot).Plays
 			else
