@@ -6,20 +6,21 @@ local function Machine(slot, player, uses, rng)
         sprite:RemoveOverlay("CoinInsert")
     end
     if not GOLD_RESTOCK:isSpriteBusy(sprite) then
-        local run_save = SaveHelper.RunSave(Epiphany)
-        run_save["TURNOVER_RESTOCK_DATA"]=(run_save["TURNOVER_RESTOCK_DATA"] or {})
-        local beggar_string=tostring(slot.InitSeed)
-        if run_save["TURNOVER_RESTOCK_DATA"][beggar_string] == nil then
-            run_save["TURNOVER_RESTOCK_DATA"][beggar_string] = {}
-            run_save["TURNOVER_RESTOCK_DATA"][beggar_string].payouts = 0
+        local run_save = Epiphany:RunSave()
+        run_save["TURNOVER_RESTOCK_DATA"] = (run_save["TURNOVER_RESTOCK_DATA"] or {})
+        local slot_string = tostring(slot.InitSeed)
+        if run_save["TURNOVER_RESTOCK_DATA"][slot_string] == nil then
+            run_save["TURNOVER_RESTOCK_DATA"][slot_string] = {}
+            run_save["TURNOVER_RESTOCK_DATA"][slot_string].payouts = 0
         end
-        local payouts = run_save["TURNOVER_RESTOCK_DATA"][beggar_string].payouts
+        local payouts = run_save["TURNOVER_RESTOCK_DATA"][slot_string].payouts
         payouts = payouts + 1
 
+        player:AddCoins(-5)
         sprite:PlayOverlay("CoinInsert", true)
-        SFXManager():Play(SoundEffect.SOUND_COIN_SLOT)
+        Epiphany.sfxman:Play(SoundEffect.SOUND_COIN_SLOT)
 
-        run_save["TURNOVER_RESTOCK_DATA"][beggar_string].payouts = payouts
+        run_save["TURNOVER_RESTOCK_DATA"][slot_string].payouts = payouts
 	end
     if sprite:IsPlaying("Death") or sprite:IsPlaying("Broken") then
         return true

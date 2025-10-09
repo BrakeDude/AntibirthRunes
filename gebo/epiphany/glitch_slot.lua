@@ -6,7 +6,7 @@ local function Machine(slot, player, uses, rng)
     if not (GLITCH:isSpriteBusy(sprite) or slot:GetData().ExtraActivations and slot:GetData().ExtraActivations > 0) then      
         sprite:PlayOverlay(pickupInSlot[rng:RandomInt(3) + 1].."Insert", true)
 
-		slot:GetData().ExtraActivations = rng:RandomInt(GLITCH.MaxExtraActivations - GLITCH.MinExtraActivations) + GLITCH.MinExtraActivations
+		slot:GetData().ExtraActivations = rng:RandomInt(GLITCH.MAX_EXTRA_ACTIVATIONS - GLITCH.MIN_EXTRA_ACTIVATIONS) + GLITCH.MIN_EXTRA_ACTIVATIONS
 		SFXManager():Play(GLITCH.SFX_INSERT)
 
 		slot:GetData().LastTouchedPlayer = player
