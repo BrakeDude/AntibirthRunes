@@ -1,22 +1,32 @@
-local prizeVariant = {
-    [1] = PickupVariant.PICKUP_COIN,
-    [2] = PickupVariant.PICKUP_COIN,
-    [3] = PickupVariant.PICKUP_HEART,
-    [4] = PickupVariant.PICKUP_HEART,
-    [5] = PickupVariant.PICKUP_COLLECTIBLE,
-}
+Gebo.AddSaveData("KeyMasterPrizeVariant",  {
+    [1] = PickupVariant.PICKUP_CHEST,
+    [2] = PickupVariant.PICKUP_LOCKEDCHEST,
+    [3] = PickupVariant.PICKUP_REDCHEST,
+    [4] = PickupVariant.PICKUP_BOMBCHEST,
+    [5] = PickupVariant.PICKUP_MIMICCHEST,
+    [6] = PickupVariant.PICKUP_HAUNTEDCHEST,
+    [7] = PickupVariant.PICKUP_SPIKEDCHEST,
+    [8] = PickupVariant.PICKUP_WOODENCHEST,
+    [9] = PickupVariant.PICKUP_ETERNALCHEST,
+    [10] = PickupVariant.PICKUP_COLLECTIBLE,
+    [11] = PickupVariant.PICKUP_TRINKET,
+})
 
 local function SpawnPrize(type, variant, subtype, pos, rng)
-    local x,y = TSIL.Random.GetRandomInt(-4, 4, rng), TSIL.Random.GetRandomInt(2,4, rng)
-    if x < 0 then x = math.min(x,-1) elseif x > 0 then x = math.max(x,1) end
-    Isaac.Spawn(type, variant, subtype, pos, Vector(x,y), nil)
+    local isTrinket = variant == PickupVariant.PICKUP_TRINKET
+    local vel = Gebo.GetSpawnPickupVelocity(pos, rng, 1)
+    if isTrinket then
+        vel.X = vel.X * 4
+        vel.Y = vel.Y * 2.5
+    end
+    Isaac.Spawn(type, variant, subtype, pos, vel, nil)
 end
 
 local function Beggar(slot, player, uses, rng)
     if uses > 0 or uses == -1 then
         local sprite = slot:GetSprite()
         if sprite:IsPlaying("Idle") then
-            SFXManager():Play(SoundEffect.SOUND_SCAMPER, 1, 0, false)
+            SFXManager():Play(SoundEffect.SOUND_KEY_DROP0, 1, 0, false)
             if rng:RandomFloat() <= 0.3 then
                 sprite:Play("PayPrize", true)
             else
@@ -40,21 +50,21 @@ local function Beggar(slot, player, uses, rng)
         end
         if sprite:IsEventTriggered("Prize") then
             SFXManager():Play(SoundEffect.SOUND_SLOTSPAWN, 1, 0, false)
+            local prizeVariant = Gebo.GetSaveDataByKey("KeyMasterPrizeVariant")
             local var = prizeVariant[rng:RandomInt(#prizeVariant)+1]
             if var == PickupVariant.PICKUP_COLLECTIBLE then
                 local itemPool = Game():GetItemPool()
-                local poolItem = itemPool:GetCollectible(ItemPoolType.POOL_BOMB_BUM, true, slot.DropSeed)
+                local poolItem = itemPool:GetCollectible(ItemPoolType.POOL_KEY_MASTER, true, slot.DropSeed)
                 Isaac.Spawn(EntityType.ENTITY_PICKUP, var, poolItem, Game():GetRoom():FindFreePickupSpawnPosition(slot.Position + Vector(0, 40)), Vector.Zero, nil)
                 Gebo.GetData(slot).Teleport = true
+            elseif var == PickupVariant.PICKUP_TRINKET then
+                SpawnPrize(EntityType.ENTITY_PICKUP, PickupVariant.PICKUP_TRINKET, TrinketType.TRINKET_PAPER_CLIP, slot.Position, rng)
+                Game():GetItemPool():RemoveTrinket(TrinketType.TRINKET_PAPER_CLIP)
+                Gebo.GetData(slot).Teleport = true
+                table.remove(prizeVariant, 11)
+                Gebo.SetSaveDataByKey("KeyMasterPrizeVariant", prizeVariant)
             else
                 SpawnPrize(EntityType.ENTITY_PICKUP, var, 0, slot.Position, rng)
-                if var == PickupVariant.PICKUP_COIN then
-                    local extra = rng:RandomInt(3)
-                    while extra > 0 do
-                        SpawnPrize(EntityType.ENTITY_PICKUP, var, 0, slot.Position, rng)
-                        extra = extra - 1
-                    end
-                end
             end
         end
         if sprite:IsFinished("Teleport") then
@@ -65,4 +75,4 @@ local function Beggar(slot, player, uses, rng)
     return uses
 end
 
-Gebo.AddMachineBeggar(9, Beggar, 6)
+Gebo.AddMachineBeggar(7, Beggar, 6)

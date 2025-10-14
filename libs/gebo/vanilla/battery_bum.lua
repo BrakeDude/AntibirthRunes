@@ -8,9 +8,8 @@ Gebo.AddSaveData("BatteryBumPrizeVariant", {
 })
 
 local function SpawnPrize(type, variant, subtype, pos, rng)
-    local x,y = TSIL.Random.GetRandomInt(-4, 4, rng), TSIL.Random.GetRandomInt(2,4, rng)
-    if x < 0 then x = math.min(x,-1) elseif x > 0 then x = math.max(x,1) end
-    local battery = Isaac.Spawn(type, variant, subtype, pos, Vector(x,y), nil):ToPickup()
+    local vel = Gebo.GetSpawnPickupVelocity(pos, rng, 1)
+    local battery = Isaac.Spawn(type, variant, subtype, pos, vel, nil):ToPickup()
     if battery.SubType == 4 then
         battery:Morph(type, variant, BatterySubType.BATTERY_NORMAL)
     end
