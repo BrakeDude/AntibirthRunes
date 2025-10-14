@@ -15,9 +15,8 @@ Gebo.AddSaveData("KeyMasterPrizeVariant",  {
 local function SpawnPrize(type, variant, subtype, pos, rng)
     local isTrinket = variant == PickupVariant.PICKUP_TRINKET
     local vel = Gebo.GetSpawnPickupVelocity(pos, rng, 1)
-    if isTrinket then
-        vel.X = vel.X * 4
-        vel.Y = vel.Y * 2.5
+    if not isTrinket then
+        vel:Resize(20 + rng:RandomInt(10) + rng:RandomFloat())
     end
     Isaac.Spawn(type, variant, subtype, pos, vel, nil)
 end

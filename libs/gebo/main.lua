@@ -147,15 +147,18 @@ local function Init()
 		if REPENTOGON then
 			return EntityPickup.GetRandomPickupVelocity(position, rng, begType)
 		else
-			local velX = rng:RandomFloat() + rng:RandomInt(5)
-			if rng:RandomInt(2) == 0 then
-				velX = -velX
+			local vel = Vector.Zero
+			if begType == 0 then
+				vel = Vector.FromAngle(rng:RandomInt(360))
+			else
+				local offset = rng:RandomInt(60)
+				if rng:RandomInt(2) == 0 then
+					offset = -offset
+				end
+				vel = Vector.FromAngle(90 + offset)
 			end
-			local velY = rng:RandomFloat() + rng:RandomInt(5)
-			if begType == 0 and rng:RandomInt(2) == 0 then
-				velY = -velY
-			end
-			return Vector(velX, velY)
+			vel:Resize(math.max(3, 2 + rng:RandomInt(3)) + rng:RandomFloat())
+			return vel
 		end
 	end
 
