@@ -91,6 +91,12 @@ local useAPI = {
 	[3] = "None",
 }
 
+local GiantBookColors = {
+	["poof2"] = Color(0, 0, 0, 0.8, 0, 0, 0),
+	["poof"] = Color(0.2, 0.1, 0.3, 1, 0, 0, 0),
+	["bg"] = Color(0.117, 0.0117, 0.2, 1, 0, 0, 0),
+}
+
 local function RefreshSaveData()
 	if mod:HasData() then
 		mod.SavedData = json.decode(mod:LoadData())
@@ -196,14 +202,14 @@ local function playGiantBook(gfx, sfx, p, rng)
 			GiantBookAPI.playGiantBook(
 				"Appear",
 				gfx .. ".png",
-				Color(0.2, 0.1, 0.3, 1, 0, 0, 0),
-				Color(0.117, 0.0117, 0.2, 1, 0, 0, 0),
-				Color(0, 0, 0, 0.8, 0, 0, 0),
+				GiantBookColors["poof"],
+				GiantBookColors["bg"],
+				GiantBookColors["poof2"],
 				sound
 			)
 		elseif bookAPI ~= 1 or not GiantBookAPI then
 			if ScreenAPI and bookAPI == 2 then
-				ScreenAPI.PlayGiantbook("gfx/ui/giantbook/" .. gfx, "Appear", p, Isaac.GetItemConfig():GetCard(card))
+				ScreenAPI.PlayGiantbook("gfx/ui/giantbook/" .. gfx .. ".png", "Appear", p, Isaac.GetItemConfig():GetCard(Isaac.GetCardIdByName(gfx)), GiantBookColors)
 			end
 			if sound then
 				SFXManager():Play(sound, 1, 0)
