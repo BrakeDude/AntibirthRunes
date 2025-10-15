@@ -97,6 +97,31 @@ local GiantBookColors = {
 	["bg"] = Color(0.117, 0.0117, 0.2, 1, 0, 0, 0),
 }
 
+local function CheckAvailableAPI(api, prevAPI, forward)
+	if not GiantBookAPI and not ScreenAPI then
+		return 3
+	end
+	if not prevAPI then
+		prevAPI = api
+	end	
+	if api < prevAPI then
+		if api == 2 and not ScreenAPI then
+			api = 1
+		end
+		if api == 1 and not GiantBookAPI then
+			api = 3
+		end
+	else
+		if api == 1 and not GiantBookAPI then
+			api = 2
+		end
+		if api == 2 and not ScreenAPI then
+			api = 3
+		end
+	end
+	return api
+end
+
 local function RefreshSaveData()
 	if mod:HasData() then
 		mod.SavedData = json.decode(mod:LoadData())
@@ -106,6 +131,11 @@ local function RefreshSaveData()
 				GeboData = {},
 			}
 
+			mod:SaveData(json.encode(mod.SavedData))
+		end
+		local prevAPI = mod.SavedData.BookAPI
+		mod.SavedData.BookAPI = CheckAvailableAPI(prevAPI)
+		if prevAPI ~= mod.SavedData.BookAPI then
 			mod:SaveData(json.encode(mod.SavedData))
 		end
 	else
@@ -120,7 +150,7 @@ end
 
 RefreshSaveData()
 
-if ModConfigMenu then
+if ModConfigMenu and not REPENTOGON then
 	local RunesMCM = "Antibirth Runes"
 	ModConfigMenu.UpdateCategory(RunesMCM, {
 		Info = { "Configuration for API mod." },
@@ -138,7 +168,7 @@ if ModConfigMenu then
 			return "Preffered API to use: " .. useAPI[mod.SavedData.BookAPI]
 		end,
 		OnChange = function(currentNum)
-			mod.SavedData.BookAPI = currentNum
+			mod.SavedData.BookAPI = CheckAvailableAPI(currentNum, mod.SavedData.BookAPI)
 			mod:SaveData(json.encode(mod.SavedData))
 		end,
 		Info = "Preffered API for animations.",
@@ -159,13 +189,8 @@ if not REPENTOGON then
 
 	function Runes:LoadData(isLoading)
 		if isLoading then
-			if not mod:HasData() then
-				RefreshSaveData()
-			else
-				local data = json.decode(mod:LoadData())
-				mod.SavedData = data
-				Gebo.LoadSaveData(mod.SavedData.GeboData)
-			end
+			RefreshSaveData()
+			Gebo.LoadSaveData(mod.SavedData.GeboData)
 		else
 			mod.SavedData.GeboData = {}
 		end
