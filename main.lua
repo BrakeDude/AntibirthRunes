@@ -183,38 +183,38 @@ local function PlaySND(sound, rng)
 end
 
 local function playGiantBook(gfx, sfx, p, rng)
-	local sound = nil
-	if Options.AnnouncerVoiceMode == 2 or Options.AnnouncerVoiceMode == 0 and rng:RandomInt(4) == 0 then
-		sound = sfx
-	end
-	local bookAPI = mod.SavedData.BookAPI
-	if GiantBookAPI and bookAPI == 1 then
-		GiantBookAPI.playGiantBook(
-			"Appear",
-			gfx,
-			Color(0.2, 0.1, 0.3, 1, 0, 0, 0),
-			Color(0.117, 0.0117, 0.2, 1, 0, 0, 0),
-			Color(0, 0, 0, 0.8, 0, 0, 0),
-			sound
-		)
-	elseif bookAPI ~= 1 or not GiantBookAPI then
-		if ScreenAPI and bookAPI == 2 then
-			ScreenAPI.PlayGiantbook("gfx/ui/giantbook/" .. gfx, "Appear", p, Isaac.GetItemConfig():GetCard(card))
+	if REPENTOGON then
+		ItemOverlay.Show(Isaac.GetGiantBookIdByName(gfx), 0, p)
+		PlaySND(sfx, rng)
+	else
+		local sound = nil
+		if Options.AnnouncerVoiceMode == 2 or Options.AnnouncerVoiceMode == 0 and rng:RandomInt(4) == 0 then
+			sound = sfx
 		end
-		if sound then
-			SFXManager():Play(sound, 1, 0)
+		local bookAPI = mod.SavedData.BookAPI
+		if GiantBookAPI and bookAPI == 1 then
+			GiantBookAPI.playGiantBook(
+				"Appear",
+				gfx .. ".png",
+				Color(0.2, 0.1, 0.3, 1, 0, 0, 0),
+				Color(0.117, 0.0117, 0.2, 1, 0, 0, 0),
+				Color(0, 0, 0, 0.8, 0, 0, 0),
+				sound
+			)
+		elseif bookAPI ~= 1 or not GiantBookAPI then
+			if ScreenAPI and bookAPI == 2 then
+				ScreenAPI.PlayGiantbook("gfx/ui/giantbook/" .. gfx, "Appear", p, Isaac.GetItemConfig():GetCard(card))
+			end
+			if sound then
+				SFXManager():Play(sound, 1, 0)
+			end
 		end
 	end
 end
 
 function Runes:UseGebo(gebo, player, useflags)
 	local rng = player:GetCardRNG(gebo)
-	if REPENTOGON then
-		ItemOverlay.Show(Isaac.GetGiantBookIdByName("Gebo"), 0, player)
-		PlaySND(GeboSFX, rng)
-	else
-		playGiantBook("Gebo.png", GeboSFX, player, rng)
-	end
+	playGiantBook("Gebo", GeboSFX, player, rng)
 	local slots = {}
 	for _, slot in ripairs(Isaac.GetRoomEntities()) do
 		if Gebo.IsGeboSlot(slot) then
@@ -263,12 +263,7 @@ mod:AddCallback(ModCallbacks.MC_USE_CARD, Runes.UseGebo, GeboID)
 
 function Runes:UseKenaz(kenaz, player, useflags)
 	local rng = player:GetCardRNG(kenaz)
-	if REPENTOGON then
-		ItemOverlay.Show(Isaac.GetGiantBookIdByName("Kenaz"), 0, player)
-		PlaySND(KenazSFX, rng)
-	else
-		playGiantBook("Kenaz.png", KenazSFX, player, rng)
-	end
+	playGiantBook("Kenaz", KenazSFX, player, rng)
 	player:AddCollectible(CollectibleType.COLLECTIBLE_TOXIC_SHOCK, 0, false, 0, 0)
 	player:RemoveCollectible(CollectibleType.COLLECTIBLE_TOXIC_SHOCK, true, 0, true)
 	if magicchalk_3f(player) then
@@ -279,12 +274,7 @@ mod:AddCallback(ModCallbacks.MC_USE_CARD, Runes.UseKenaz, KenazID)
 
 function Runes:UseFehu(fehu, player, useflags)
 	local rng = player:GetCardRNG(fehu)
-	if REPENTOGON then
-		ItemOverlay.Show(Isaac.GetGiantBookIdByName("Fehu"), 0, player)
-		PlaySND(FehuSFX, rng)
-	else
-		playGiantBook("Fehu.png", FehuSFX, player, rng)
-	end
+	playGiantBook("Fehu", FehuSFX, player, rng)
 	local entities = {}
 	for _, e in pairs(Isaac.GetRoomEntities()) do
 		if
@@ -309,10 +299,9 @@ mod:AddCallback(ModCallbacks.MC_USE_CARD, Runes.UseFehu, FehuID)
 function Runes:UseOthala(othala, player, useflags)
 	local data = mod:GetData(player)
 	local rng = player:GetCardRNG(othala)
+	playGiantBook("Othala", OthalaSFX, player, rng)
 	if REPENTOGON then
-		ItemOverlay.Show(Isaac.GetGiantBookIdByName("Othala"), 0, player)
 		local itemConfig = Isaac.GetItemConfig()
-		PlaySND(OthalaSFX, rng)
 		local history = player:GetHistory()
 		---@type table
 		local collectHistory = history:GetCollectiblesHistory()
@@ -343,7 +332,6 @@ function Runes:UseOthala(othala, player, useflags)
 			index = nil
 		end
 	else
-		playGiantBook("Othala.png", OthalaSFX, player, rng)
 		if player:GetCollectibleCount() > 0 then
 			local playersItems = {}
 			for item = 1, mod.GetMaxCollectibleID() do
@@ -403,12 +391,7 @@ mod:AddCallback(ModCallbacks.MC_POST_PLAYER_UPDATE, Runes.OthalaDuplicatePickup)
 
 function Runes:UseSowilo(sowilo, player, useflags)
 	local rng = player:GetCardRNG(sowilo)
-	if REPENTOGON then
-		ItemOverlay.Show(Isaac.GetGiantBookIdByName("Sowilo"), 0, player)
-		PlaySND(SowiloSFX, rng)
-	else
-		playGiantBook("Sowilo.png", SowiloSFX, player, rng)
-	end
+	playGiantBook("Sowilo", SowiloSFX, player, rng)
 
 	if magicchalk_3f(player) then
 		player:UseActiveItem(CollectibleType.COLLECTIBLE_FORGET_ME_NOW, UseFlag.USE_NOANIM | UseFlag.USE_NOANNOUNCER)
@@ -421,12 +404,7 @@ mod:AddCallback(ModCallbacks.MC_USE_CARD, Runes.UseSowilo, SowiloID)
 function Runes:UseIngwaz(ingwaz, player, useflags)
 	local entities = Isaac:GetRoomEntities()
 	local rng = player:GetCardRNG(ingwaz)
-	if REPENTOGON then
-		ItemOverlay.Show(Isaac.GetGiantBookIdByName("Ingwaz"), 0, player)
-		PlaySND(IngwazSFX, rng)
-	else
-		playGiantBook("Ingwaz.png", IngwazSFX, player, rng)
-	end
+	playGiantBook("Ingwaz", IngwazSFX, player, rng)
 	for i = 1, #entities do
 		if entities[i]:ToPickup() then
 			if
